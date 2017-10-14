@@ -1,0 +1,20 @@
+{% extends 'panel/base.html' %}
+
+{% block title %} {{ title }} {% endblock %}
+
+{% block content %}
+
+    <!--כותרת-->
+    <div>
+        <h5 class="align-middle side-margin"><strong>{{ title }}</strong></h5>
+    </div><br>
+    <form class="form-horizontal"action="" method="post" enctype="multipart/form-data">
+    {% include 'panel/form-template.html' %}
+    <div class="form-group">
+        <div class="col-md-auto">
+            <button type="submit" class="btn btn-outline-primary btn-sm">הרשמה</button>
+        </div>
+    </div>
+    <form>
+
+{% endblock %}

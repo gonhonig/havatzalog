@@ -1,0 +1,12 @@
+<nav class="nav">
+    <div class="dropdown">
+        <a class="nav-item nav-link dropdown-toggle" data-toggle="dropdown" href="#" aria-expanded="false">
+            {% if pupil %}{{ pupil }}{% else %}בחר/י חניך/ה{% endif %}
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" style="text-align: right">
+            {% for pupil in all_pupils %}
+                <a class="dropdown-item nav-link" href="/panel/{{ pupil.pk }}">{{ pupil }}</a>
+            {% endfor %}
+        </div>
+    </div>
+</nav>

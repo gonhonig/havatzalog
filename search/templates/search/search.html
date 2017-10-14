@@ -1,0 +1,40 @@
+{% extends 'panel/base.html' %}
+{% load render_table from django_tables2 %}
+{% load querystring from django_tables2 %}
+{% load staticfiles %}
+{% block title %} חיפוש {% endblock %}
+
+{% block content %}
+
+
+<form class="form-inline" action="" method="get">
+    <div id="field" class="form-control">
+        <select class="form-control picker" name="select1" id="select1">
+            <option value="pupil__name__contains">חניך</option>
+            <option value="tags__name__in">תגיות</option>
+            <option value="parameter__name__contains">פרמטר</option>
+            <option class="pick-date" value="updated_time__range">תאריכים</option>
+            <option value="details__contains">תוכן</option>
+        </select>
+        <input autocomplete="off" class="form-control mr-sm-2 input-width" id="field1" name="field1" type="text" placeholder="מילת חיפוש" data-items="8"/>
+        <button id="b1" class="btn btn-success btn-sm add-more mr-sm-1" type="button"><span class="oi oi-plus"></span></button>
+    </div>
+    <div class="container-fluid margin-top-05 no-padding">
+        <input class="btn btn-white" type="submit" value="חיפוש">
+    </div>
+
+</form>
+
+{% if results %}
+<div class="form-control margin-top-05 text-align-left">
+    {% render_table results %}
+    <a href="{% querystring '_export'='xlsx' %}" class="btn btn-white btn-sm">יצוא לאקסל</a>
+</div>
+{% endif %}
+
+    <script type="text/javascript" src="{% static 'panel/jquery/jquery-3.2.1.min.js' %}"></script>
+    <script src="{% static 'search/js/dynamic_fields.js' %}"></script>
+
+{% block results %}
+{% endblock %}
+{% endblock %}

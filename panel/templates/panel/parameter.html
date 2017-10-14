@@ -1,0 +1,72 @@
+{% extends 'panel/base.html' %}
+
+{% block title %} {{ pupil }} {% endblock %}
+
+{% block content %}
+    <!--כותרת-->
+    <div class="d-flex justify-content-between">
+        <div class="col p-0 d-flex d-inline-flex align-items-center flex-wrap">
+            <a class="btn btn-outline-secondary btn-sm ml-2" href="/panel/{{ pupil.pk }}{% if request.GET.view == 'recent' %}/?recent=on{% endif %}" role="button">חזרה</a>
+            <h5 class="ml-2">{{ pupil }}</h5>
+            <h5><strong>{{ parameter }}</strong></h5>
+        </div>
+        <div class="col-auto p-0 text-left">
+            <a class="btn btn-outline-info btn-sm" href="/panel/{{ pupil.pk }}/{{ parameter.pk }}/add" role="button">הוספת עידכון</a>
+        </div>
+    </div><br/>
+
+    <!--רשימת עידכונים-->
+    <div class="list-group">
+        {% for cut in all_cuts reversed %}
+            <div class="list-group-item d-flex justify-content-between">
+                <div class="col p-0">
+                    <div class="mb-1">
+                        <h4 style="display: inline-block">
+                            <span class="badge badge-{{ cut.status }}">
+                                <span class="oi oi-{% if cut.status == 'primary' %}star{% elif cut.status == 'success' %}thumb-up{% elif cut.status == 'danger'%}thumb-down{% else %}warning{% endif %}"></span>
+                            </span>
+                        </h4>
+                        <h4 style="display: inline-block" class="ml-2">
+                            <span class="badge badge-secondary">
+                                <span class="oi oi-{% if cut.trend == 'U' %}chevron-top{% elif cut.trend == 'D'%}chevron-bottom{% else %}minus{% endif %}"></span>
+                            </span>
+                        </h4>
+                        <h5  style="display: inline-block"><strong>{{ cut.headline }}</strong></h5>
+                    </div>
+                    <p class="mb-1">{{ cut.details }}</p>
+                    <div>
+                    {% for tag in cut.tags.names %}
+                        <a href="{% url 'search:search' %}?select1=tags__name__in&field1={{ tag }}" class="badge badge-info">{{ tag }}</a>
+                    {% endfor %}
+                    </div>
+                </div>
+                <div class="col-auto p-0 d-flex align-items-end flex-column">
+                    <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
+                        <small><span class="oi oi-x"></span></small>
+                    </button>
+                    <div style="text-align: left" class="mt-auto">
+                        <small class="text-muted">עודכן ע"י {{ cut.updated_by }}</small>
+                        <small class="text-muted" style="display: block">{{ cut.updated_time }}</small>
+                    </div>
+                </div>
+                <!--חלון יאשור מחיקה-->
+                <div class="modal fade" id="delete_{{ cut.pk }}" tabindex="-1" role="dialog" aria-labelledby="delete_{{ cut.pk }}_modal" aria-hidden="true">
+                  <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">בטוח שברצונך למחוק?</h5>
+                        </div>
+                        <div class="modal-footer d-flex w-100 justify-content-between">
+                            <button type="button" class="col btn btn-success" data-dismiss="modal" style="cursor: pointer">לא</button>
+                            <a href="{% url 'panel:cut-delete' pupil.pk parameter.pk cut.pk %}" role="button" class="col btn btn-danger mr-2">כן</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+

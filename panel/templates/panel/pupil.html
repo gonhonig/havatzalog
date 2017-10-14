@@ -1,0 +1,82 @@
+{% extends 'panel/base.html' %}
+{% load staticfiles %}
+{% block title %} {{ pupil }} {% endblock %}
+
+{% block content %}
+
+<!--בחירת חניך-->
+    <div class="row justify-content-between">
+        <div class="col">
+            {% include 'panel/pupil_dropdown.html' %}
+            <div class="d-flex flex-nowrap pr-3">
+                <h6 class="ml-1 {% if view_type == 'recent' %}text-secondary{% endif %}"><strong>משוב</strong></h6>
+                <form action="" method="get" id="view-form">
+                    <label class="switch ml-1">
+                      <input id="view" type="checkbox" name="recent" onchange="this.form.submit()" {% if view_type == 'recent' %}checked{% endif %}>
+                      <span class="slider round"></span>
+                    </label>
+                </form>
+                <h6 class="{% if view_type == 'mashov' %}text-secondary{% endif %}"><strong>לאחרונה</strong></h6>
+            </div>
+        </div>
+        <div class="col-auto text-left d-flex flex-column">
+            <a class="btn btn-outline-info btn-sm" href="{% url 'panel:cut-add' pupil.pk %}" role="button">הוספת עידכון</a>
+            <a class="btn btn-outline-info btn-sm mt-2" href="{% url 'panel:change-permissions' pupil.pk %}" role="button">עריכת הרשאות</a>
+        </div>
+    </div>
+
+    {% if view_type == 'recent' %}
+        <hr><div class="row">
+            {% for cut in all_cuts %}
+                <!-- כרטיסיה לפרמטר {{ cut.cut.parameter }}-->
+                <div class="col-lg-3 col-md-4 col-sm-6 mt-3">
+                    <div class="card bg-light border-{{ cut.cut.status }}" id="{{ cut.cut.id }}">
+                        <div class="card-header text-center"><strong>{{ cut.parameter }}</strong></div>
+                        <a href="/panel/{{ pupil.pk }}/{{ cut.parameter.pk }}/?view=recent" class="card-body btn btn-{{ cut.cut.status }} btn-square">
+                            <h6 class="mt-2 headline">{{ cut.cut.headline }}</h6>
+                            <span class="oi oi-{% if cut.cut.trend == 'U' %}chevron-top{% elif cut.cut.trend == 'D'%}chevron-bottom{% else %}minus{% endif %}"></span>
+                            <h4 class="d-flex justify-content-end no-margin">
+                            <span class="badge badge-{{ cut.freq }} align-self-end freq-badge">
+                                <span class="oi oi-{% if cut.freq == 'primary' %}star{% elif cut.freq == 'success' %}thumb-up{% elif cut.freq == 'danger'%}thumb-down{% else %}warning{% endif %}"></span>
+                            </span>
+                        </h4>
+                        </a>
+                        <div class="card-footer bg-light text-muted text-center">
+                            <small>{{ cut.cut.updated_time }}</small>
+                        </div>
+                    </div>
+                    <!--כאן יכול להיכנס חלון פירוט נפתח לפרמטר-->
+                </div>
+            {% endfor %}
+        </div>
+
+    {% else %}
+        {% for category, cut_set in all_cuts.items %}
+            <hr><h5>{{ category }}</h5>
+            <div class="row">
+            {% for cut in cut_set %}
+                <!-- כרטיסיה לפרמטר {{ cut.cut.parameter }}-->
+                <div class="col-lg-3 col-md-4 col-sm-6 mt-3">
+                    <div class="card bg-light border-{{ cut.cut.status }}" id="{{ cut.cut.id }}">
+                        <div class="card-header text-center"><strong>{{ cut.parameter }}</strong></div>
+                        <a href="/panel/{{ pupil.pk }}/{{ cut.parameter.pk }}" class="card-body btn btn-{{ cut.cut.status }} btn-square">
+                            <h6 class="mt-2 headline">{{ cut.cut.headline }}</h6>
+                            <span class="oi oi-{% if cut.cut.trend == 'U' %}chevron-top{% elif cut.cut.trend == 'D'%}chevron-bottom{% else %}minus{% endif %}"></span>
+                            <h4 class="d-flex justify-content-end no-margin">
+                            <span class="badge badge-{{ cut.freq }} align-self-end freq-badge">
+                                <span class="oi oi-{% if cut.freq == 'primary' %}star{% elif cut.freq == 'success' %}thumb-up{% elif cut.freq == 'danger'%}thumb-down{% else %}warning{% endif %}"></span>
+                            </span>
+                        </h4>
+                        </a>
+                        <div class="card-footer bg-light text-muted text-center">
+                            <small>{{ cut.cut.updated_time }}</small>
+                        </div>
+                    </div>
+                    <!--כאן יכול להיכנס חלון פירוט נפתח לפרמטר-->
+                </div>
+            {% endfor %}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,44 @@
+{% extends 'panel/base.html' %}
+{% load render_table from django_tables2 %}
+
+{% block title %} חיפוש {% endblock %}
+
+{% block content %}
+    <form class="form-vertical" action="" method="get">
+        {% csrf_token %}
+        <div class="container-fluid">
+            <div class="form-group row">
+                <input class="form-control col" type="text" name="q" placeholder="חיפוש" value="{{ request.GET.q }}">
+                <input class="btn btn-primary col-sm-auto mr-sm-2" type="submit" value="חיפוש">
+            </div>
+            <div class="form-check row">
+                <div class="col-auto">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" name="t" value="תגיות">
+                        תגיות
+                    </label>
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" name="pu" value="חניכים">
+                        חניכים
+                    </label>
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" name="pa" value="פרמטרים">
+                        פרמטרים
+                    </label>
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="checkbox" name="c" value="תוכן">
+                        תוכן
+                    </label>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+    <div class="container-fluid justify-content-between">
+    {% if results %}{% render_table results %}{% endif %}
+    </div>
+
+    {% block results %}
+    {% endblock %}
+{% endblock %}

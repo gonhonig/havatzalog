@@ -1,0 +1,63 @@
+{% extends 'panel/base.html' %}
+{% load widget_tweaks %}
+{% load taggit_templatetags2_tags %}
+{% block title %} הוספת עידכון {% endblock %}
+
+{% block content %}
+
+    <!--כותרת-->
+    <div>
+        <h5 class="align-middle side-margin">הוספת עידכון <strong>{{ parameter }}</strong> לחניך/ה <strong>{{ pupil }} :</strong></h5>
+    </div><br>
+
+    <form class="form-horizontal"action="" method="post" enctype="multipart/form-data" id="cut_form" autocomplete="off">
+
+    {% csrf_token %}
+    <div class="form-group" style="padding-right: 15px">
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="row form-group has-error">
+                    <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
+                    <div class="col-sm-auto">
+                        {{ field|add_class:"form-control" }}
+                        <span class="help-block">
+                            {% for error in  field.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row form-group">
+                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
+                    <div class="col-sm-auto">
+                    {% if field.name == 'tags'%}
+                        {{ field|attr:"data-role:tagsinput" }}
+                    {% else %}
+                        {{ field|add_class:"form-control" }}
+                    {% endif %}
+                    </div>
+                {% if field.name == 'parameter' %}
+                    <div class="col-sm-auto">
+                        <a href="/panel/{{ pupil.pk }}/add/parameter-add" class="btn btn-outline-secondary" role="button">פרמטר חדש</a>
+                    </div>
+                {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="row form-group" style="padding-right: 15px">
+        <div class="col-sm-2"></div>
+        <div class="col-sm-auto">
+            {% get_taglist as tags for 'panel.Cut' %}
+            {% for tag in tags %}
+                <span class="badge badge-info">{{ tag }}</span>
+            {% endfor %}
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-outline-primary btn-sm">הוסף</button>
+        </div>
+    </div>
+    </form>
+
+{% endblock %}

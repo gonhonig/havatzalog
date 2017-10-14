@@ -1,0 +1,13 @@
+{% extends "admin/base_site.html" %}
+
+{% block content %}
+
+<p>בחר/י מורשה נוסף</p>
+
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" name="apply" value="הוסף" />
+</form>
+
+{% endblock %}
