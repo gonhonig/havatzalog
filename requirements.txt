@@ -1,3 +1,4 @@
+cycler==0.10.0
 Django==1.11.4
 django-admin-view-permission==1.1
 django-appconf==1.0.2
@@ -7,9 +8,22 @@ django-taggit==0.22.1
 django-taggit-templatetags2==1.6.1
 django-widget-tweaks==1.4.1
 et-xmlfile==1.0.1
+gunicorn==19.7.1
+jdcal==1.3
+matplotlib==2.0.2
+numpy==1.13.0
+odfpy==1.3.5
+olefile==0.44
+openpyxl==2.4.8
+Pillow==4.1.1
 psycopg2==2.7.3.1
+pyparsing==2.2.0
+python-dateutil==2.6.0
+pytz==2017.2
+PyYAML==3.12
 six==1.10.0
 tablib==0.12.1
+unicodecsv==0.14.1
 virtualenv==15.1.0
 xlrd==1.0.0
 xlwt==1.3.0
