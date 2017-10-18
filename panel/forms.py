@@ -1,5 +1,5 @@
 from django import forms
-from .models import Cut, Parameter, Pupil
+from .models import Cut, Parameter, Pupil, Event
 from django.contrib.auth.models import User
 
 
@@ -46,6 +46,12 @@ class ChangePermissionsForm(forms.ModelForm):
         widgets = {
             'can_read': forms.CheckboxSelectMultiple()
         }
+
+
+class EventForm(forms.ModelForm):
+    class Meta:
+        model = Event
+        fields = ['headline', 'date', 'details']
 
 
 class PremAddForm(forms.Form):

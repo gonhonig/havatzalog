@@ -20,7 +20,7 @@ class PupilAdmin(admin.ModelAdmin):
         the_admin = User.objects.get(username='gonhonig')
         for pupil in queryset:
             pupil.can_read.add(the_admin)
-    add_admin.short_description = "הוסף הרשאות למנהל"
+    add_admin.short_description = "הוספת הרשאות למנהל"
 
     def prem_add(self, request, queryset):
         if "apply" in request.POST:

@@ -1,0 +1,74 @@
+{% extends 'panel/base.html' %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+{% block title %} הוספת אירוע {% endblock %}
+
+{% block content %}
+
+    <!--כותרת-->
+    <div>
+        <h5 class="align-middle side-margin">הוספת אירוע לחניך/ה <strong>{{ pupil }} :</strong></h5>
+    </div><br>
+
+    <form class="form-horizontal"action="" method="post" enctype="multipart/form-data" id="event_form" autocomplete="off">
+
+    {% csrf_token %}
+    <div class="form-group" style="padding-right: 15px">
+        {% for field in form %}
+            {% if field.errors %}
+                <div class="row form-group has-error">
+                    <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
+                    <div class="col-sm-auto">
+                        {{ field|add_class:"form-control" }}
+                        <span class="help-block">
+                            {% for error in  field.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="row form-group">
+                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
+                    <div class="col-sm-auto">
+                        {{ field|add_class:"form-control" }}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">עדכונים&nbsp;<span class="text-danger">*</span></label>
+        <div class="form-inline mr-3 mb-3">
+            <div id="cut" class="form-control">
+                <select class="form-control picker" name="select1" id="select1">
+                    <option value="pupil__name__contains">חניך</option>
+                    <option value="tags__name__in">תגיות</option>
+                    <option value="parameter__name__contains">פרמטר</option>
+                    <option class="pick-date" value="updated_time__range">תאריכים</option>
+                    <option value="details__contains">תוכן</option>
+                </select>
+                <input autocomplete="off" class="form-control mr-sm-2 input-width" id="field1" name="field1" type="text" placeholder="מילת חיפוש" data-items="8"/>
+                <button id="b1" class="btn btn-success btn-sm add-more mr-sm-1" type="button"><span class="oi oi-plus"></span></button>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-2">
+            <button type="submit" class="btn btn-outline-primary btn-sm">הוסף</button>
+        </div>
+    </div>
+    </form>
+
+    <script type="text/javascript" src="{% static 'panel/jquery/jquery-3.2.1.min.js' %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#id_date").daterangepicker({
+            singleDatePicker: true,
+            "opens": "center",
+            "autoApply": true,
+            locale: {
+                format: 'YYYY/MM/DD'
+            }
+        });
+    });
+    </script>
+{% endblock %}

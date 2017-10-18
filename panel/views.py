@@ -195,3 +195,15 @@ def cut_delete(request, pupil_id, parameter_id, cut_id):
     return redirect(reverse('panel:parameter', kwargs={'pupil_id': pupil_id, 'parameter_id': parameter_id}))
 
 
+def event_create(request, pupil_id):
+    form = EventForm(request.POST or None)
+    if form.is_valid():
+        instance = form.save(commit=False)
+        instance.pupil = Pupil.objects.get(pk=pupil_id)
+        return redirect(reverse('panel:pupil', kwargs={'pupil_id': pupil_id}))
+
+    context = {
+        'form': form,
+        'pupil': Pupil.objects.get(pk=pupil_id),
+    }
+    return render(request, 'panel/event_form.html', context)

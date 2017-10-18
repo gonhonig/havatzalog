@@ -9,7 +9,7 @@
         <div class="col">
             {% include 'panel/pupil_dropdown.html' %}
             <div class="d-flex flex-nowrap pr-3">
-                <h6 class="ml-1 {% if view_type == 'recent' %}text-secondary{% endif %}"><strong>משוב</strong></h6>
+                <h6 class="ml-1 {% if view_type == 'recent' %}text-secondary{% endif %}"><strong>קטגוריות</strong></h6>
                 <form action="" method="get" id="view-form">
                     <label class="switch ml-1">
                       <input id="view" type="checkbox" name="recent" onchange="this.form.submit()" {% if view_type == 'recent' %}checked{% endif %}>
@@ -21,6 +21,7 @@
         </div>
         <div class="col-auto text-left d-flex flex-column">
             <a class="btn btn-outline-info btn-sm" href="{% url 'panel:cut-add' pupil.pk %}" role="button">הוספת עידכון</a>
+{#            <a class="btn btn-outline-info btn-sm mt-2" href="{% url 'panel:event-add' pupil.pk %}" role="button">הוספת אירוע</a>#}
             <a class="btn btn-outline-info btn-sm mt-2" href="{% url 'panel:change-permissions' pupil.pk %}" role="button">עריכת הרשאות</a>
         </div>
     </div>
