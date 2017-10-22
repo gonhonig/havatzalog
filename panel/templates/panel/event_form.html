@@ -37,7 +37,12 @@
     </div>
 
     <!--עדכונים-->
+    <div class="row form-group justify-content-between">
         <label class="col-sm-2 control-label">עדכונים</label>
+        <div class="col-sm-auto">
+            <a href="{% url 'panel:parameter-add-fe' pupil.pk %}" class="btn btn-outline-secondary btn-sm" role="button">פרמטר חדש</a>
+        </div>
+    </div>
     {{ cut_forms.management_form }}
     <ul class="list-group p-0">
         {% for cut_form in cut_forms %}

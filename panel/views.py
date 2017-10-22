@@ -219,6 +219,18 @@ def parameter_create(request, pupil_id):
     return render(request, 'panel/parameter_form.html', context)
 
 
+def parameter_create_from_event(request, pupil_id):
+    form = ParameterForm(request.POST or None)
+    if form.is_valid():
+        instance = form.save()
+        return redirect(reverse('panel:event-add', kwargs={'pupil_id': pupil_id}))
+    form.fields['category'].widget.attrs['class'] = "select2"
+    context = {
+        'form': form
+    }
+    return render(request, 'panel/parameter_form.html', context)
+
+
 def cut_delete(request, pupil_id, parameter_id, cut_id):
     the_cut = Cut.objects.get(pk = cut_id)
     the_cut.delete()

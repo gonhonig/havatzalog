@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^(?P<pupil_id>[0-9]+)/events/(?P<event_id>[0-9]+)/(?P<cut_id>[0-9]+)/$', views.cut_delete2, name="cut-delete2"),
     url(r'^(?P<pupil_id>[0-9]+)/(?P<parameter_id>[0-9]+)/add/$', views.cut_create_specific, name="cut-add-specific"),
     url(r'^(?P<pupil_id>[0-9]+)/add/parameter-add/$', views.parameter_create, name="parameter-add"),
+    url(r'^(?P<pupil_id>[0-9]+)/add-event/parameter-add/$', views.parameter_create_from_event, name="parameter-add-fe")
 ]
