@@ -244,7 +244,7 @@ def event_create(request, pupil_id):
         widgets={'parameter': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'}),
                  'details': forms.Textarea(attrs={'rows':3, 'cols':50}),
                  },
-        extra=2
+        extra=10
     )
     if request.method == 'POST':
         event = EventForm(request.POST, prefix='event')
