@@ -25,7 +25,7 @@
     <div class="list-group">
         {% for cut in all_cuts reversed %}
             <div class="list-group-item d-flex justify-content-between">
-                <div class="col-10 p-0">
+                <div class="col p-0">
                     {% if cut.private and request.user != cut.updated_by %}
                     <h4 class="m-0"><span class="badge badge-secondary"><span class="oi oi-lock-locked"></span></span></h4>
                     {% else %}
@@ -47,7 +47,7 @@
                     </div>
                     {% endif %}
                 </div>
-                <div class="col-2 p-0 d-flex align-items-end flex-column">
+                <div class="col-auto p-0 d-flex align-items-end flex-column">
                     {% if request.user == cut.updated_by %}
                     <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
                         <small><span class="oi oi-x"></span></small>
