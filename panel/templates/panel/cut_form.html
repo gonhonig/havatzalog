@@ -31,6 +31,8 @@
                     <div class="col-sm-auto">
                     {% if field.name == 'tags'%}
                         {{ field|attr:"data-role:tagsinput" }}
+                    {% elif field.name == 'private'%}
+                        {{ field|add_class:"form-check" }}
                     {% else %}
                         {{ field|add_class:"form-control" }}
                     {% endif %}

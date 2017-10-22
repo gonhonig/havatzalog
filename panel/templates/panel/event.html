@@ -1,20 +1,26 @@
 {% extends 'panel/base.html' %}
 
-{% block title %} {{ pupil }} {% endblock %}
+{% block title %} {{ event.headline }} {% endblock %}
 
 {% block content %}
     <!--כותרת-->
     <div class="d-flex justify-content-between">
         <div class="col p-0 d-flex d-inline-flex align-items-center flex-wrap">
-            <a class="btn btn-outline-secondary btn-sm ml-2" href="/panel/{{ pupil.pk }}{% if request.GET.view == 'recent' %}/?recent=on{% endif %}" role="button">חזרה</a>
+            <a class="btn btn-outline-secondary btn-sm ml-2" href="/panel/{{ pupil.pk }}/events/{% if request.GET.view == 'recent' %}?view=recent{% endif %}" role="button">חזרה</a>
             <h5 class="ml-2">{{ pupil }}</h5>
-            <h5><strong>{{ parameter }}</strong></h5>
-        </div>
-        <div class="col-auto p-0 text-left">
-            <a class="btn btn-outline-info btn-sm" href="/panel/{{ pupil.pk }}/{{ parameter.pk }}/add" role="button">הוספת עידכון</a>
+            <h5><strong>אירוע</strong></h5>
         </div>
     </div><br/>
+    <hr>
 
+    <div class="container">
+        <h5><strong>{{ event.headline }}</strong></h5>
+        <p class="text-muted">{{ event.date }}</p>
+        <p>
+            {{ event.details }}
+        </p>
+    </div>
+    <hr>
     <!--רשימת עידכונים-->
     <div class="list-group">
         {% for cut in all_cuts reversed %}
@@ -61,7 +67,7 @@
                         </div>
                         <div class="modal-footer d-flex w-100 justify-content-between">
                             <button type="button" class="col btn btn-success" data-dismiss="modal" style="cursor: pointer">לא</button>
-                            <a href="{% url 'panel:cut-delete' pupil.pk parameter.pk cut.pk %}" role="button" class="col btn btn-danger mr-2">כן</a>
+                            <a href="{% url 'panel:cut-delete2' pupil.pk event.pk cut.pk %}" role="button" class="col btn btn-danger mr-2">כן</a>
                         </div>
                     </div>
                   </div>

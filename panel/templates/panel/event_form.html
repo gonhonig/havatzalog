@@ -1,5 +1,6 @@
 {% extends 'panel/base.html' %}
 {% load widget_tweaks %}
+{% load taggit_templatetags2_tags %}
 {% load staticfiles %}
 {% block title %} הוספת אירוע {% endblock %}
 
@@ -10,15 +11,14 @@
         <h5 class="align-middle side-margin">הוספת אירוע לחניך/ה <strong>{{ pupil }} :</strong></h5>
     </div><br>
 
-    <form class="form-horizontal"action="" method="post" enctype="multipart/form-data" id="event_form" autocomplete="off">
-
+    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" id="event_form" autocomplete="off">
     {% csrf_token %}
     <div class="form-group" style="padding-right: 15px">
-        {% for field in form %}
+        {% for field in event %}
             {% if field.errors %}
                 <div class="row form-group has-error">
                     <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
-                    <div class="col-sm-auto">
+                    <div class="col-sm-{% if field.name == 'details' %}9{% else %}auto{% endif %}">
                         {{ field|add_class:"form-control" }}
                         <span class="help-block">
                             {% for error in  field.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
@@ -28,30 +28,58 @@
             {% else %}
                 <div class="row form-group">
                     <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
-                    <div class="col-sm-auto">
+                    <div class="col-sm-{% if field.name == 'details' %}9{% else %}auto{% endif %}">
                         {{ field|add_class:"form-control" }}
                     </div>
                 </div>
             {% endif %}
         {% endfor %}
     </div>
-    <div class="form-group">
-        <label class="col-sm-2 control-label">עדכונים&nbsp;<span class="text-danger">*</span></label>
-        <div class="form-inline mr-3 mb-3">
-            <div id="cut" class="form-control">
-                <select class="form-control picker" name="select1" id="select1">
-                    <option value="pupil__name__contains">חניך</option>
-                    <option value="tags__name__in">תגיות</option>
-                    <option value="parameter__name__contains">פרמטר</option>
-                    <option class="pick-date" value="updated_time__range">תאריכים</option>
-                    <option value="details__contains">תוכן</option>
-                </select>
-                <input autocomplete="off" class="form-control mr-sm-2 input-width" id="field1" name="field1" type="text" placeholder="מילת חיפוש" data-items="8"/>
-                <button id="b1" class="btn btn-success btn-sm add-more mr-sm-1" type="button"><span class="oi oi-plus"></span></button>
+
+    <!--עדכונים-->
+        <label class="col-sm-2 control-label">עדכונים</label>
+    {{ cut_forms.management_form }}
+    <ul class="list-group p-0">
+        {% for cut_form in cut_forms %}
+        <li class="list-group-item">
+            <div class="form-group row mb-0">
+                <div class="d-flex flex-column pl-3">
+                    <div class="d-flex align-self-center">
+                        {{ forloop.counter }} |
+                    </div>
+                </div>
+                <div class="d-flex flex-column">
+                    <div class="d-flex flex-row pb-2 align-items-center">
+                        <label class="control-label pl-1" for="id_{{ cut_form.parameter.name }}">{{ cut_form.parameter.label }}&nbsp;<span class="text-danger">*</span></label>
+                        {{ cut_form.parameter|add_class:"form-control" }}
+                    </div>
+                    <div class="d-flex flex-row align-items-center">
+                        <label class="control-label pl-1" for="id_{{ cut_form.tags.name }}">{{ cut_form.tags.label }}</label>
+                        {{ cut_form.tags|attr:"data-role:tagsinput" }}
+                    </div>
+                </div>
+                <div class="d-flex flex-column pr-2">
+                    <div class="d-flex flex-row pb-2 align-items-center">
+                        <label class="control-label pl-1" for="id_{{ cut_form.status.name }}">{{ cut_form.status.label }}&nbsp;<span class="text-danger">*</span></label>
+                        {{ cut_form.status|add_class:"form-control" }}
+                    </div>
+                    <div class="d-flex flex-row justify-content-center align-items-center">
+                        <label class="control-label pl-1" for="id_{{ cut_form.private.name }}"><span class="oi oi-lock-locked"></span></label>
+                        {{ cut_form.private|add_class:"form-check" }}
+                    </div>
+                </div>
+                <div class="d-flex flex-column pr-3">
+                    <div class="d-flex flex-row">
+                        <label class="control-label pl-2" for="id_{{ cut_form.details.name }}">{{ cut_form.details.label }}&nbsp;<span class="text-danger">*</span></label>
+                        {{ cut_form.details|add_class:"form-control" }}
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-    <div class="form-group">
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="form-group pt-3">
         <div class="col-sm-2">
             <button type="submit" class="btn btn-outline-primary btn-sm">הוסף</button>
         </div>
@@ -61,7 +89,7 @@
     <script type="text/javascript" src="{% static 'panel/jquery/jquery-3.2.1.min.js' %}"></script>
     <script type="text/javascript">
     $(document).ready(function () {
-        $("#id_date").daterangepicker({
+        $("#id_event-date").daterangepicker({
             singleDatePicker: true,
             "opens": "center",
             "autoApply": true,

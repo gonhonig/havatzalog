@@ -6,8 +6,20 @@ from django.contrib.auth.models import User
 class CutForm(forms.ModelForm):
     class Meta:
         model = Cut
-        fields = ['parameter', 'headline', 'status', 'trend', 'details', 'tags']
+        fields = ['parameter', 'headline', 'status', 'details', 'tags', 'private']
         widgets = {
+            'details': forms.Textarea(attrs={'rows': 4}),
+            'parameter': forms.SelectMultiple()
+
+        }
+
+
+class CutFormEvent(forms.ModelForm):
+    class Meta:
+        model = Cut
+        fields = ['parameter', 'status', 'details', 'tags', 'private']
+        widgets = {
+            'details': forms.Textarea(attrs={'rows': 4}),
             'parameter': forms.SelectMultiple()
         }
 
@@ -15,7 +27,7 @@ class CutForm(forms.ModelForm):
 class CutFormSpecific(forms.ModelForm):
     class Meta:
         model = Cut
-        fields = ['headline', 'status', 'trend', 'details', 'tags']
+        fields = ['headline', 'status', 'details', 'tags']
 
 
 class PupilForm(forms.ModelForm):
@@ -51,7 +63,10 @@ class ChangePermissionsForm(forms.ModelForm):
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['headline', 'date', 'details']
+        fields = ['headline', 'details']
+        widgets = {
+            'details': forms.Textarea(attrs={'rows': 4}),
+        }
 
 
 class PremAddForm(forms.Form):

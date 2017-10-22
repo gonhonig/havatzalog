@@ -1,0 +1,59 @@
+{% extends 'panel/base.html' %}
+
+{% block title %} {{ pupil }} | אירועים {% endblock %}
+
+{% block content %}
+    <!--כותרת-->
+    <div class="d-flex justify-content-between">
+        <div class="col p-0 d-flex d-inline-flex align-items-center flex-wrap">
+            <a class="btn btn-outline-secondary btn-sm ml-2" href="/panel/{{ pupil.pk }}{% if request.GET.view == 'recent' %}/?recent=on{% endif %}" role="button">חזרה</a>
+            <h5 class="ml-2">{{ pupil }}</h5>
+            <h5><strong>אירועים</strong></h5>
+        </div>
+        <div class="col-auto p-0 text-left">
+            <a class="btn btn-outline-info btn-sm" href="{% url 'panel:event-add' pupil.pk %}" role="button">הוספת אירוע</a>
+        </div>
+    </div><br/>
+
+    <!--רשימת עידכונים-->
+    <div class="list-group">
+        {% for event in all_events reversed %}
+            <div class="list-group-item d-flex justify-content-between">
+                <div class="col p-0">
+                    <div class="mb-1">
+                        <a href="{% url 'panel:event' pupil.pk event.pk %}{% if request.GET.view == 'recent' %}?view=recent{% endif %}"><h5 style="display: inline-block"><strong>{{ event.headline }}</strong></h5></a>
+                    </div>
+                    <p class="mb-1 headline">{{ event.details }}</p>
+                </div>
+                <div class="col-auto p-0 d-flex align-items-end flex-column">
+                    {% if request.user == event.updated_by %}
+                    <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ event.pk }}">
+                        <small><span class="oi oi-x"></span></small>
+                    </button>
+                    {% endif %}
+                    <div style="text-align: left" class="mt-auto">
+                        <small class="text-muted">עודכן ע"י {{ event.updated_by.first_name }} {{ event.updated_by.last_name }}</small>
+                        <small class="text-muted" style="display: block">{{ event.date }}</small>
+                    </div>
+                </div>
+                <!--חלון יאשור מחיקה-->
+                <div class="modal fade" id="delete_{{ event.pk }}" tabindex="-1" role="dialog" aria-labelledby="delete_{{ event.pk }}_modal" aria-hidden="true">
+                  <div class="modal-dialog modal-sm">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">בטוח שברצונך למחוק?</h5>
+                        </div>
+                        <div class="modal-footer d-flex w-100 justify-content-between">
+                            <button type="button" class="col btn btn-success" data-dismiss="modal" style="cursor: pointer">לא</button>
+                            <a href="{% url 'panel:event-delete' pupil.pk event.pk %}" role="button" class="col btn btn-danger mr-2">כן</a>
+                        </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+
+

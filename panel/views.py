@@ -1,9 +1,10 @@
 from django.shortcuts import render, reverse, redirect
-from datetime import datetime
 from .forms import *
 from .models import Cut, Pupil, Parameter
 from django.views.generic.edit import UpdateView, DeleteView
 from django.db.models import Count
+from django.forms import modelformset_factory
+import datetime
 
 
 def selector(request, extra = None):
@@ -88,13 +89,42 @@ def parameter(request, pupil_id, parameter_id):
     return render(request, 'panel/parameter.html', context)
 
 
+def events(request, pupil_id):
+    the_user = request.user
+    the_pupil = Pupil.objects.get(pk=pupil_id)
+    if the_pupil not in the_user.pupil_set.all():
+        return selector(request, 'אל תנסה/י לצפות בחניכים שאינך מורשה אליהם!')
+
+    context = {
+        'pupil': the_pupil,
+        'nbar': 'panel',
+        'all_events': the_pupil.event_set.all()
+    }
+    return render(request, 'panel/events.html', context)
+
+
+def event(request, pupil_id, event_id):
+    the_user = request.user
+    the_pupil = Pupil.objects.get(pk=pupil_id)
+    if the_pupil not in the_user.pupil_set.all():
+        return selector(request, 'אל תנסה/י לצפות בחניכים שאינך מורשה אליהם!')
+    the_event = Event.objects.get(pk=event_id)
+    context = {
+        'pupil': the_pupil,
+        'event': the_event,
+        'nbar': 'panel',
+        'all_cuts': the_pupil.cut_set.filter(event_id=event_id)
+    }
+    return render(request, 'panel/event.html', context)
+
+
 def cut_create(request, pupil_id):
     form = CutForm(request.POST or None)
     if form.is_valid():
         instance = form.save(commit=False)
         instance.pupil = Pupil.objects.get(pk=pupil_id)
-        instance.updated_time = datetime.now()
-        instance.updated_by = request.user.first_name + ' ' + request.user.last_name
+        instance.updated_time = datetime.datetime.now()
+        instance.updated_by = request.user
         if not form.cleaned_data['headline']:
             instance.headline = form.cleaned_data['details'][:40]
         instance.save()
@@ -116,8 +146,8 @@ def cut_create_specific(request, pupil_id, parameter_id):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.pupil = Pupil.objects.get(pk=pupil_id)
-        instance.updated_time = datetime.now()
-        instance.updated_by = request.user.first_name + ' ' + request.user.last_name
+        instance.updated_time = datetime.datetime.now()
+        instance.updated_by = request.user
         if not form.cleaned_data['headline']:
             instance.headline = form.cleaned_data['details'][:40]
         instance.save()
@@ -195,15 +225,57 @@ def cut_delete(request, pupil_id, parameter_id, cut_id):
     return redirect(reverse('panel:parameter', kwargs={'pupil_id': pupil_id, 'parameter_id': parameter_id}))
 
 
-def event_create(request, pupil_id):
-    form = EventForm(request.POST or None)
-    if form.is_valid():
-        instance = form.save(commit=False)
-        instance.pupil = Pupil.objects.get(pk=pupil_id)
-        return redirect(reverse('panel:pupil', kwargs={'pupil_id': pupil_id}))
+def cut_delete2(request, pupil_id, event_id, cut_id):
+    the_cut = Cut.objects.get(pk = cut_id)
+    the_cut.delete()
+    return redirect(reverse('panel:event', kwargs={'pupil_id': pupil_id, 'event_is': event_id}))
 
-    context = {
-        'form': form,
-        'pupil': Pupil.objects.get(pk=pupil_id),
-    }
-    return render(request, 'panel/event_form.html', context)
+
+def event_delete(request, pupil_id, event_id):
+    the_cut = Event.objects.get(pk = event_id)
+    the_cut.delete()
+    return redirect(reverse('panel:events', kwargs={'pupil_id': pupil_id}))
+
+
+def event_create(request, pupil_id):
+    CutFormSet = modelformset_factory(
+        Cut,
+        fields=('parameter', 'status', 'tags', 'private', 'details'),
+        widgets={'parameter': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'}),
+                 'details': forms.Textarea(attrs={'rows':3, 'cols':50}),
+                 },
+        extra=2
+    )
+    if request.method == 'POST':
+        event = EventForm(request.POST, prefix='event')
+        cut_forms = CutFormSet(request.POST, prefix='cuts')
+
+        if event.is_valid() and cut_forms.is_valid():
+            instance = event.save(commit=False)
+            instance.pupil = Pupil.objects.get(pk=pupil_id)
+            instance.headline = event.cleaned_data["headline"]
+            instance.details = event.cleaned_data["details"]
+            # raw_date = event.cleaned_data["date"]
+            # instance.date = datetime.date(*[int(x) for x in raw_date.split('/')])
+            instance.date = datetime.datetime.now()
+            instance.updated_by = request.user
+            instance.save()
+            listing = cut_forms.save(commit=False)
+            for cut in listing:
+                cut.pupil = Pupil.objects.get(pk=pupil_id)
+                cut.updated_time = datetime.datetime.now()
+                cut.updated_by = request.user
+                cut.headline = event.cleaned_data['headline']
+                cut.event = instance
+                cut.save()
+            cut_forms.save_m2m()
+            return redirect(reverse('panel:events', kwargs={'pupil_id': pupil_id}))
+    else:
+        cut_forms = CutFormSet(prefix='cuts', queryset=Cut.objects.none())
+        context = {
+            'event': EventForm(prefix='event'),
+            'cut_forms': cut_forms,
+            'pupil': Pupil.objects.get(pk=pupil_id),
+        }
+        return render(request, 'panel/event_form.html', context)
+

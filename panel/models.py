@@ -38,6 +38,17 @@ class Parameter(models.Model):
         return self.name
 
 
+class Event(models.Model):
+    pupil = models.ForeignKey(Pupil, on_delete=models.CASCADE, verbose_name="חניך")
+    headline = models.CharField(max_length=40, verbose_name="כותרת")
+    details = models.TextField(verbose_name="פירוט")
+    date = models.DateTimeField(verbose_name="תאריך")
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="עודכן על ידי", default=None)
+
+    def __str__(self):
+        return self.headline
+
+
 class Cut(models.Model):
     pupil = models.ForeignKey(Pupil, on_delete=models.CASCADE, verbose_name="חניך")
     parameter = models.ManyToManyField(Parameter, verbose_name="פרמטרים")
@@ -49,27 +60,19 @@ class Cut(models.Model):
         ('warning', 'דרוש שיפור'),
         ('danger', 'לא עובר סף'),
     )
-    status = models.CharField(max_length=250, choices=STATUSES, verbose_name="סטטוס")
-    TRENDS = (
-        ('U', 'בעלייה'),
-        ('C', 'ללא שינוי'),
-        ('D', 'בירידה'),
-    )
-    trend = models.CharField(max_length=250, choices=TRENDS, verbose_name="מגמה")
+    status = models.CharField(max_length=250, choices=STATUSES, verbose_name="סטטוס", blank=True)
     updated_time = models.DateTimeField(verbose_name="תאריך")
-    updated_by = models.CharField(max_length=250, verbose_name="עודכן על ידי")
+    updated_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="עודכן על ידי")
     tags = TaggableManager(verbose_name="תגיות", blank=True)
+    private = models.BooleanField(default=False, blank=True, verbose_name="עדכון פרטי")
+    event = models.ForeignKey(Event, blank=True, null=True)
 
     def __str__(self):
-        return self.headline[:10]
+        return self.headline
 
     def post_time(self):
         return str(self.updated_time.hour) + ':' + str(self.updated_time.minute) + ' - ' + str(self.updated_time.day) + '/' + str(self.updated_time.month)
 
 
-class Event(models.Model):
-    pupil = models.ForeignKey(Pupil, on_delete=models.CASCADE, verbose_name="חניך")
-    headline = models.CharField(max_length=40, verbose_name="כותרת")
-    details = models.TextField(verbose_name="פירוט")
-    date = models.DateTimeField(verbose_name="תאריך")
-    cuts = models.ManyToManyField(Cut, verbose_name="פרמטרים")
+
+

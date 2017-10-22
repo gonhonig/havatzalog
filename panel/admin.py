@@ -1,13 +1,13 @@
 from  django.shortcuts import render, HttpResponseRedirect
 from django.contrib import admin
-from .models import Pupil, Cut, Parameter
+from .models import Pupil, Cut, Parameter, Event
 from .forms import PremAddForm
 from django.contrib.auth.models import User
 
 
 class CutAdmin(admin.ModelAdmin):
-    list_display = ('pupil', 'headline', 'status', 'trend', 'updated_time')
-    list_filter = ('pupil', 'parameter', 'status', 'trend', 'updated_by')
+    list_display = ('pupil', 'headline', 'status', 'updated_time')
+    list_filter = ('pupil', 'parameter', 'status', 'updated_by')
 
 
 class PupilAdmin(admin.ModelAdmin):
@@ -52,4 +52,5 @@ class ParameterAdmin(admin.ModelAdmin):
 admin.site.register(Pupil, PupilAdmin)
 admin.site.register(Parameter, ParameterAdmin)
 admin.site.register(Cut, CutAdmin)
+admin.site.register(Event)
 
