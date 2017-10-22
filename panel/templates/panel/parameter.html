@@ -39,6 +39,9 @@
                         <a href="{% url 'search:search' %}?select1=tags__name__in&field1={{ tag }}" class="badge badge-info">{{ tag }}</a>
                     {% endfor %}
                     </div>
+                    {% if cut.event %}
+                        <a href="{% url 'panel:event' pupil.pk cut.event.pk %}" class="badge badge-success">אירוע: <strong>{{ cut.event.headline }}</strong></a>
+                    {% endif %}
                     {% endif %}
                 </div>
                 <div class="col-auto p-0 d-flex align-items-end flex-column">
