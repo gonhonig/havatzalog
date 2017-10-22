@@ -37,7 +37,7 @@
                             </span>
                         </h4>
                         {% endif %}
-                        <h5  style="display: inline-block"><strong>{% for param in cut.parameter %}{% if forloop.counter > 1 %}, {% endif %}{{ param }}{% endfor %}</strong></h5>
+                        <h5  style="display: inline-block"><strong>{% for param in cut.parameter.all %}{% if forloop.counter > 1 %}, {% endif %}{{ param }}{% endfor %}</strong></h5>
                     </div>
                     <p class="mb-1">{{ cut.details }}</p>
                     <div>
