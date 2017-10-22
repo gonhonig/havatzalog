@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="2459cfbf-f194-44e6-bba2-41a526d5d5f7" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-    </list>
+    <list default="true" id="2459cfbf-f194-44e6-bba2-41a526d5d5f7" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -60,10 +58,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="parameter.html" pinned="false" current-in-tab="true">
+      <file leaf-file-name="parameter.html" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/panel/templates/panel/parameter.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-168">
+            <state relative-caret-position="206">
               <caret line="42" column="75" lean-forward="false" selection-start-line="42" selection-start-column="75" selection-end-line="42" selection-end-column="75" />
               <folding />
             </state>
@@ -76,6 +74,18 @@
             <state relative-caret-position="57">
               <caret line="41" column="214" lean-forward="false" selection-start-line="41" selection-start-column="214" selection-end-line="41" selection-end-column="214" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="views.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/panel/views.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="195">
+              <caret line="246" column="16" lean-forward="false" selection-start-line="246" selection-start-column="16" selection-end-line="246" selection-end-column="16" />
+              <folding>
+                <element signature="e#0#54#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -189,7 +199,6 @@
         <option value="$PROJECT_DIR$/panel/models.py" />
         <option value="$PROJECT_DIR$/panel/forms.py" />
         <option value="$PROJECT_DIR$/panel/urls.py" />
-        <option value="$PROJECT_DIR$/panel/views.py" />
         <option value="$PROJECT_DIR$/panel/templates/panel/pupil.html" />
         <option value="$PROJECT_DIR$/panel/templates/panel/events.html" />
         <option value="$PROJECT_DIR$/panel/templates/panel/event.html" />
@@ -197,6 +206,7 @@
         <option value="$PROJECT_DIR$/panel/templates/panel/index.html" />
         <option value="$PROJECT_DIR$/panel/templates/panel/base.html" />
         <option value="$PROJECT_DIR$/panel/templates/panel/parameter.html" />
+        <option value="$PROJECT_DIR$/panel/views.py" />
       </list>
     </option>
   </component>
@@ -206,7 +216,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="18" />
     <option name="y" value="-8" />
     <option name="width" value="1378" />
@@ -558,7 +568,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="7" />
+    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3245083" sideWeight="0.48989898" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32894737" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -871,8 +881,8 @@
         <state relative-caret-position="272">
           <caret line="24" column="26" lean-forward="true" selection-start-line="24" selection-start-column="26" selection-end-line="24" selection-end-column="26" />
           <folding>
-            <element signature="n#style#0;n#h5#0;n#a#0;n#div#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#h5#0;n#a#0;n#div#0;n#div#0;n#div#0;n#div#1;n#!!top" expanded="false" />
+            <element signature="n#style#0;n#div#0;n#div#1;n#div#0;n#div#1;n#!!top" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -898,7 +908,7 @@
         <state relative-caret-position="586">
           <caret line="66" column="134" lean-forward="true" selection-start-line="66" selection-start-column="95" selection-end-line="66" selection-end-column="134" />
           <folding>
-            <element signature="e#3955#3961#0#HTML" expanded="true" />
+            <element signature="e#3955#3961#0#HTML" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -908,7 +918,7 @@
         <state relative-caret-position="328">
           <caret line="65" column="30" lean-forward="false" selection-start-line="65" selection-start-column="30" selection-end-line="65" selection-end-column="30" />
           <folding>
-            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#0#24#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -918,16 +928,6 @@
         <state relative-caret-position="190">
           <caret line="45" column="108" lean-forward="false" selection-start-line="45" selection-start-column="108" selection-end-line="45" selection-end-column="108" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/panel/views.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2433">
-          <caret line="233" column="18" lean-forward="false" selection-start-line="233" selection-start-column="17" selection-end-line="233" selection-end-column="18" />
-          <folding>
-            <element signature="e#0#54#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -967,9 +967,19 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/panel/templates/panel/parameter.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-168">
+        <state relative-caret-position="206">
           <caret line="42" column="75" lean-forward="false" selection-start-line="42" selection-start-column="75" selection-end-line="42" selection-end-column="75" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/panel/views.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="195">
+          <caret line="246" column="16" lean-forward="false" selection-start-line="246" selection-start-column="16" selection-end-line="246" selection-end-column="16" />
+          <folding>
+            <element signature="e#0#54#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
