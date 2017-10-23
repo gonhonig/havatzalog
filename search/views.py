@@ -52,33 +52,3 @@ def search_view(request):
     }
     return render(request, 'search/search.html', context)
 
-
-
-# def old_search_view(request):
-#     query = request.GET.get('q')
-#     tags = request.GET.get('t')
-#     pupils = request.GET.get('pu')
-#     parameters = request.GET.get('pa')
-#     content = request.GET.get('c')
-#     tags_q, pupils_q, parameters_q, content_q = Cut.objects.none(), Cut.objects.none(), Cut.objects.none(), Cut.objects.none()
-#     results = None
-#     if query:
-#         query_list = query.split(', ')
-#         if tags:
-#             print(query_list)
-#             tags_q = Cut.objects.filter(tags__name__in=query_list)
-#         if pupils:
-#             pupils_q = Cut.objects.filter(pupil__first_name__contains=query, pupil__last_name__contains=query)
-#         if parameters:
-#             parameters_q = Cut.objects.filter(parameter__name__contains=query, parameter__category__contains=query)
-#         if content:
-#             content_q = Cut.objects.filter(details__contains=query)
-#         results = tags_q | pupils_q | parameters_q | content_q
-#         results.distinct()
-#         results = CutTable(results)
-#     context = {
-#         'title': 'הפאנל',
-#         'nbar': 'search',
-#         'results': results
-#     }
-#     return render(request, 'search/search2.html', context)

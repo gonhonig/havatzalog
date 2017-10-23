@@ -6,6 +6,9 @@ from django.db.models import Count
 from django.forms import modelformset_factory
 from django.forms.models import model_to_dict
 import datetime
+from .tables import ExportCuts, ExportEvents
+from django_tables2.config import RequestConfig
+from django_tables2.export.export import TableExport
 
 
 def selector(request, extra = None):

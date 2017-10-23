@@ -46,10 +46,14 @@
                 </div>
                 <div class="col-auto p-0 d-flex align-items-end flex-column">
                     {% if request.user == cut.updated_by %}
-                    <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
-                        <small><span class="oi oi-x"></span></small>
-                    </button>
-                    <a class="btn btn-outline-secondary btn-sm mr-2 mt-2" href="{% url 'panel:cut-edit' pupil.pk parameter.pk cut.pk %}">עריכה</a>
+                    <div class="d-flex flex-row">
+                        <a class="btn btn-outline-success btn-circle ml-1" href="{% url 'panel:cut-edit' pupil.pk parameter.pk cut.pk %}">
+                            <small><span class="oi oi-pencil"></span></small>
+                        </a>
+                        <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
+                            <small><span class="oi oi-x"></span></small>
+                        </button>
+                    </div>
                     {% endif %}
                     <div style="text-align: left" class="mt-auto">
                         <small class="text-muted">עודכן ע"י {{ cut.updated_by.first_name }} {{ cut.updated_by.last_name }}</small>
