@@ -42,7 +42,7 @@ class Event(models.Model):
     pupil = models.ForeignKey(Pupil, on_delete=models.CASCADE, verbose_name="חניך")
     headline = models.CharField(max_length=40, verbose_name="כותרת")
     details = models.TextField(verbose_name="פירוט")
-    date = models.DateTimeField(verbose_name="תאריך")
+    date = models.DateField(verbose_name="תאריך")
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="עודכן על ידי", default=None)
 
     def __str__(self):

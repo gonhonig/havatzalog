@@ -14,7 +14,10 @@
     <hr>
 
     <div class="container">
-        <h5><strong>{{ event.headline }}</strong></h5>
+        <div class="d-flex justify-content-between">
+            <h5><strong>{{ event.headline }}</strong></h5>
+            <a class="btn btn-outline-secondary btn-sm mr-2" href="{% url 'panel:event-edit' pupil.pk event.pk %}">עריכה</a>
+        </div>
         <p class="text-muted">{{ event.date }}</p>
         <p style="white-space: pre-line">
             {{ event.details }}
@@ -52,6 +55,7 @@
                     <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
                         <small><span class="oi oi-x"></span></small>
                     </button>
+                    <a class="btn btn-outline-secondary btn-sm mr-2 mt-2" href="{% url 'panel:cut-edit2' pupil.pk event.pk cut.pk %}">עריכה</a>
                     {% endif %}
                     <div style="text-align: left" class="mt-auto">
                         <small class="text-muted">עודכן ע"י {{ cut.updated_by.first_name }} {{ cut.updated_by.last_name }}</small>

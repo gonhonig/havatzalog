@@ -7,7 +7,7 @@
 
     <!--כותרת-->
     <div>
-        <h5 class="align-middle side-margin">הוספת עידכון <strong>{{ parameter }}</strong> לחניך/ה <strong>{{ pupil }} :</strong></h5>
+        <h5 class="align-middle side-margin">עריכת עידכון <strong>{{ the_cut.headline }}</strong> לחניך/ה <strong>{{ pupil }} :</strong></h5>
     </div><br>
 
     <form class="form-horizontal"action="" method="post" enctype="multipart/form-data" id="cut_form" autocomplete="off">
@@ -39,7 +39,11 @@
                     </div>
                 {% if field.name == 'parameter' %}
                     <div class="col-sm-auto">
-                        <a href="/panel/{{ pupil.pk }}/add/parameter-add" class="btn btn-outline-secondary" role="button">פרמטר חדש</a>
+                    {% if from_event %}
+                        <a href="{% url 'panel:parameter-add-from-cut-edit2' pupil.pk middle_id the_cut.pk %}" class="btn btn-outline-secondary" role="button">פרמטר חדש</a>
+                    {% else %}
+                        <a href="{% url 'panel:parameter-add-from-cut-edit' pupil.pk middle_id the_cut.pk %}" class="btn btn-outline-secondary" role="button">פרמטר חדש</a>
+                    {% endif %}
                     </div>
                 {% endif %}
                 </div>
@@ -57,7 +61,7 @@
     </div>
     <div class="form-group">
         <div class="col-sm-2">
-            <button type="submit" class="btn btn-outline-primary btn-sm">הוספה</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm">סיום</button>
         </div>
     </div>
     </form>

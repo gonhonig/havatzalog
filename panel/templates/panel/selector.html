@@ -8,7 +8,7 @@
 <!--בחירת חניך-->
 {% if request.user.is_authenticated %}
     {% if not all_pupils %}
-        <div class="alert alert-danger d-flex justify-content-center" role="alert">אין חניכים להצגה. הוסף/י חניך/ה או פנה/י למנהל המערכת לקבלת הרשאות</div>
+        <div class="alert alert-danger d-flex justify-content-center" role="alert">אין חניכים להצגה. הוסף/י חניך/ה או פנה/י לרש"צ לקבלת הרשאות</div>
     {% else %}
         {% if extra %}<div class="alert alert-danger d-flex justify-content-center" role="alert">{{ extra }}</div>{% endif %}
         {% include 'panel/pupil_dropdown.html' %}

@@ -63,7 +63,7 @@ class ChangePermissionsForm(forms.ModelForm):
 class EventForm(forms.ModelForm):
     class Meta:
         model = Event
-        fields = ['headline', 'details']
+        fields = ['headline', 'date', 'details']
         widgets = {
             'details': forms.Textarea(attrs={'rows': 4}),
         }

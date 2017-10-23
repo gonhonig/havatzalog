@@ -2,19 +2,19 @@
 {% load widget_tweaks %}
 {% load taggit_templatetags2_tags %}
 {% load staticfiles %}
-{% block title %} הוספת אירוע {% endblock %}
+{% block title %} עריכת אירוע {% endblock %}
 
 {% block content %}
 
     <!--כותרת-->
     <div>
-        <h5 class="align-middle side-margin">הוספת אירוע לחניך/ה <strong>{{ pupil }} :</strong></h5>
+        <h5 class="align-middle side-margin">עריכת אירוע <strong>{{ event.headline }}</strong> לחניך/ה <strong>{{ pupil }} :</strong></h5>
     </div><br>
 
     <form class="form-horizontal" action="" method="post" enctype="multipart/form-data" id="event_form" autocomplete="off">
     {% csrf_token %}
     <div class="form-group" style="padding-right: 15px">
-        {% for field in event %}
+        {% for field in event_form %}
             {% if field.errors %}
                 <div class="row form-group has-error">
                     <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
@@ -38,9 +38,9 @@
 
     <!--עדכונים-->
     <div class="row form-group justify-content-between">
-        <label class="col-sm-2 control-label">עדכונים</label>
+        <label class="col-sm-2 control-label">עדכונים נוספים</label>
         <div class="col-sm-auto">
-            <a href="{% url 'panel:parameter-add-from-event' pupil.pk %}" class="btn btn-outline-secondary btn-sm" role="button">פרמטר חדש</a>
+            <a href="{% url 'panel:parameter-add-from-event-edit' pupil.pk event.pk %}" class="btn btn-outline-secondary btn-sm" role="button">פרמטר חדש</a>
         </div>
     </div>
     {{ cut_forms.management_form }}
@@ -86,7 +86,7 @@
 
     <div class="form-group pt-3">
         <div class="col-sm-2">
-            <button type="submit" class="btn btn-outline-primary btn-sm">הוספה</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm">סיום</button>
         </div>
     </div>
     </form>

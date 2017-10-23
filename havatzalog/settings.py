@@ -119,6 +119,8 @@ TIME_ZONE = 'UTC'
 
 DATETIME_FORMAT = 'd/m/Y | H:i'
 
+DATE_FORMAT = 'd/m/Y'
+
 USE_I18N = True
 
 USE_L10N = False

@@ -49,6 +49,7 @@
                     <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
                         <small><span class="oi oi-x"></span></small>
                     </button>
+                    <a class="btn btn-outline-secondary btn-sm mr-2 mt-2" href="{% url 'panel:cut-edit' pupil.pk parameter.pk cut.pk %}">עריכה</a>
                     {% endif %}
                     <div style="text-align: left" class="mt-auto">
                         <small class="text-muted">עודכן ע"י {{ cut.updated_by.first_name }} {{ cut.updated_by.last_name }}</small>
