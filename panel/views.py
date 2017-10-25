@@ -62,12 +62,11 @@ def pupil(request, pupil_id):
         for category in categories:
             all_cuts[category] = []
             for the_parameter in Parameter.objects.filter(cut__pupil=pupil_id, category=category).distinct():
-                parameter_cuts = the_parameter.cut_set.all()
+                parameter_cuts = the_parameter.cut_set.filter(pupil=the_pupil)
                 frequency_list = parameter_cuts.values_list('status').annotate(freq=Count('status')).order_by('-freq')
                 frequent_status = frequency_list[0][0]
                 the_cut = pupils_cuts.filter(parameter=the_parameter).order_by('-updated_time')[0]
                 all_cuts[category].append({'parameter': the_parameter, 'cut': the_cut,'freq': frequent_status})
-
     context = {
         'pupil': the_pupil,
         'nbar': 'panel',
@@ -102,7 +101,7 @@ def events(request, pupil_id):
     context = {
         'pupil': the_pupil,
         'nbar': 'panel',
-        'all_events': the_pupil.event_set.all()
+        'all_events': the_pupil.event_set.all().order_by('date')
     }
     return render(request, 'panel/events.html', context)
 
@@ -402,7 +401,6 @@ def event_edit(request, pupil_id, event_id):
             return redirect(reverse('panel:events', kwargs={'pupil_id': pupil_id}))
     else:
         cut_forms = CutFormSet(prefix='cuts', queryset=Cut.objects.none())
-        # cut_forms = CutFormSet(prefix='cuts', queryset=event_cuts)
         context = {
             'event': the_event,
             'event_form': EventForm(prefix='event', initial=model_to_dict(the_event)),
@@ -410,3 +408,13 @@ def event_edit(request, pupil_id, event_id):
             'pupil': Pupil.objects.get(pk=pupil_id),
         }
         return render(request, 'panel/event_edit_form.html', context)
+
+
+# def export(request):
+#     cuts_export = ExportCuts(Cut.objects.filter(pupil__can_read=request.user))
+#     events_export = ExportEvents(Event.objects.filter(pupil__can_read=request.user))
+#     RequestConfig(request).configure(cuts_export)
+#     export_format = request.GET.get('_export', None)
+#     if TableExport.is_valid_format(export_format):
+#         exporter = TableExport(export_format, results)
+#         return exporter.response('table.{}'.format(export_format))
