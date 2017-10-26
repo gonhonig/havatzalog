@@ -11,4 +11,10 @@ class ExportEvents(tables.Table):
 class ExportCuts(tables.Table):
     class Meta:
         model = Cut
-        fields = ('pupil', 'parameter', 'headline', 'details', 'status', 'updated_time', 'updated_by', 'tags', 'private', 'event')
+        fields = ('pupil', 'parameter', 'headline', 'details', 'status', 'updated_time', 'updated_by', 'private', 'event')
+
+    def get_queryset(self, request):
+        return super(ExportCuts, self).get_queryset(request).prefetch_related('tags')
+
+    def tag_list(self, obj):
+        return u", ".join(o.name for o in obj.tags.all())

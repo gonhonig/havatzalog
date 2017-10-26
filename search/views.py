@@ -38,7 +38,7 @@ def search_view(request):
                 query.add(Q(**{item['field']: item['value']}), Q.OR)
             else:
                 query.add(Q(**{item['field']: item['value']}), Q.AND)
-        results = ResultsTable(Cut.objects.filter(pupil__can_read=request.user).filter(query).distinct())
+        results = ResultsTable(Cut.objects.filter(pupil__can_read=request.user).filter(query).distinct().exclude(Q(private=True)&~Q(updated_by=request.user)))
         RequestConfig(request).configure(results)
         export_format = request.GET.get('_export', None)
         if TableExport.is_valid_format(export_format):

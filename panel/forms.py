@@ -27,7 +27,10 @@ class CutFormEvent(forms.ModelForm):
 class CutFormSpecific(forms.ModelForm):
     class Meta:
         model = Cut
-        fields = ['headline', 'status', 'details', 'tags']
+        fields = ['headline', 'status', 'details', 'tags', 'private']
+        widgets = {
+            'details': forms.Textarea(attrs={'rows': 4})
+        }
 
 
 class PupilForm(forms.ModelForm):

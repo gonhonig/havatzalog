@@ -9,6 +9,7 @@ import datetime
 from .tables import ExportCuts, ExportEvents
 from django_tables2.config import RequestConfig
 from django_tables2.export.export import TableExport
+from django.db.models import Q
 
 
 def selector(request, extra = None):
@@ -411,10 +412,12 @@ def event_edit(request, pupil_id, event_id):
 
 
 # def export(request):
-#     cuts_export = ExportCuts(Cut.objects.filter(pupil__can_read=request.user))
+#     cuts_export = ExportCuts(Cut.objects.filter(pupil__can_read=request.user).exclude(Q(private=True)&~Q(updated_by=request.user)))
 #     events_export = ExportEvents(Event.objects.filter(pupil__can_read=request.user))
 #     RequestConfig(request).configure(cuts_export)
 #     export_format = request.GET.get('_export', None)
 #     if TableExport.is_valid_format(export_format):
-#         exporter = TableExport(export_format, results)
+#         exporter = TableExport(export_format, cuts_export)
 #         return exporter.response('table.{}'.format(export_format))
+#
+#     return  render(request, 'panel/export.html', {})
