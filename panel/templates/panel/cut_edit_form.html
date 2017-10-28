@@ -30,7 +30,6 @@
                     <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
                     <div class="col-sm-auto">
                     {% if field.name == 'tags'%}
-                        {% if field.name == 'tags'%}
                         {{ field|attr:"data-role:tagsinput" }}
                         </div>
                         <div class="col-sm-12">
