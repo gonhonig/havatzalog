@@ -48,9 +48,14 @@ class ParameterAdmin(admin.ModelAdmin):
     list_filter = ('category',)
 
 
+class EventAdmin(admin.ModelAdmin):
+    list_display = ('headline', 'pupil', 'date', 'updated_by')
+    list_filter = ('pupil', 'updated_by')
+
+
 
 admin.site.register(Pupil, PupilAdmin)
 admin.site.register(Parameter, ParameterAdmin)
 admin.site.register(Cut, CutAdmin)
-admin.site.register(Event)
+admin.site.register(Event, EventAdmin)
 

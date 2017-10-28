@@ -15,35 +15,6 @@
     {% csrf_token %}
     <div class="form-group" style="padding-right: 15px">
         {% for field in event %}
-            {% if field.errors %}
-                <div class="row form-group has-error">
-                    <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
-                    {% if field.name == 'details' %}
-                    <div class="col-sm-9">
-                        {{ field|add_class:"form-control" }}
-                        <div class="d-flex flex-row">
-                            <div class="d-flex flex-column" style="width: 100%">
-                                <div id="editable_div" contenteditable="true"></div>
-                            </div>
-                            <div class="btn-group-vertical d-flex flex-column mr-1 align-self-start" style="direction: ltr">
-                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'bold',false,null);"><small><span class="oi oi-bold"></span></small>
-                                </button>
-                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'underline',false,null);"><small><span class="oi oi-underline"></span></small>
-                                </button>
-                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand('italic',false,null);"><small><span class="oi oi-italic"></span></small>
-                                </button>
-                            </div>
-                        </div>
-                    {% else %}
-                    <div class="col-sm-auto">
-                        {{ field|add_class:"form-control" }}
-                    {% endif %}
-                        <span class="help-block">
-                            {% for error in  field.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
-                        </span>
-                    </div>
-                </div>
-            {% else %}
                 <div class="row form-group">
                     <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
                     {% if field.name == 'details' %}
@@ -68,7 +39,6 @@
                     {% endif %}
                     </div>
                 </div>
-            {% endif %}
         {% endfor %}
     </div>
     <!--עדכונים-->

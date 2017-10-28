@@ -129,7 +129,7 @@ def cut_create(request, pupil_id):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.pupil = Pupil.objects.get(pk=pupil_id)
-        instance.updated_time = datetime.datetime.now()
+        instance.updated_time = datetime.datetime.now() + datetime.timedelta(hours=3)
         instance.updated_by = request.user
         if not form.cleaned_data['headline']:
             instance.headline = form.cleaned_data['details'][:40]
@@ -152,7 +152,7 @@ def cut_create_specific(request, pupil_id, parameter_id):
     if form.is_valid():
         instance = form.save(commit=False)
         instance.pupil = Pupil.objects.get(pk=pupil_id)
-        instance.updated_time = datetime.datetime.now()
+        instance.updated_time = datetime.datetime.now() + datetime.timedelta(hours=3)
         instance.updated_by = request.user
         if not form.cleaned_data['headline']:
             instance.headline = form.cleaned_data['details'][:40]
@@ -341,7 +341,6 @@ def event_create(request, pupil_id):
     if request.method == 'POST':
         event = EventForm(request.POST, prefix='event')
         cut_forms = CutFormSet(request.POST, prefix='cuts')
-
         if event.is_valid() and cut_forms.is_valid():
             instance = event.save(commit=False)
             instance.pupil = Pupil.objects.get(pk=pupil_id)
@@ -353,7 +352,7 @@ def event_create(request, pupil_id):
             listing = cut_forms.save(commit=False)
             for cut in listing:
                 cut.pupil = Pupil.objects.get(pk=pupil_id)
-                cut.updated_time = datetime.datetime.now()
+                cut.updated_time = datetime.datetime.now() + datetime.timedelta(hours=3)
                 cut.updated_by = request.user
                 cut.headline = event.cleaned_data['headline']
                 cut.event = instance
