@@ -115,7 +115,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Jerusalem'
 
 DATETIME_FORMAT = 'd/m/Y | H:i'
 
@@ -134,4 +134,5 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 SECURE_SSL_REDIRECT = False
+
 

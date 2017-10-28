@@ -53,12 +53,13 @@ def pupil(request, pupil_id):
                 parameter_cuts = Cut.objects.filter(pupil=the_pupil, parameter=the_parameter)
                 frequency_list = parameter_cuts.values_list('status').annotate(freq=Count('status')).order_by('-freq')
                 frequent_status = frequency_list[0][0]
-                all_cuts.append({'parameter': the_parameter, 'cut': the_cut,'freq': frequent_status})
+                count = parameter_cuts.count()
+                all_cuts.append({'parameter': the_parameter, 'cut': the_cut,'freq': frequent_status, 'count': count})
 
     else:
         view_type = 'mashov'
         all_cuts = {}
-        categories = ('התנהלות מקצועית', 'חשיבה והצגה', 'ערכים', 'פיקוד ומנהיגות', 'קבוצה ובין אישי', 'יעדים', 'אחר')
+        categories = ('יעדים', 'התנהלות מקצועית', 'חשיבה והצגה', 'ערכים', 'פיקוד ומנהיגות', 'קבוצה ובין אישי', 'אחר')
         pupils_cuts = Cut.objects.filter(pupil=pupil_id)
         for category in categories:
             all_cuts[category] = []
@@ -67,7 +68,8 @@ def pupil(request, pupil_id):
                 frequency_list = parameter_cuts.values_list('status').annotate(freq=Count('status')).order_by('-freq')
                 frequent_status = frequency_list[0][0]
                 the_cut = pupils_cuts.filter(parameter=the_parameter).order_by('-updated_time')[0]
-                all_cuts[category].append({'parameter': the_parameter, 'cut': the_cut,'freq': frequent_status})
+                count = parameter_cuts.count()
+                all_cuts[category].append({'parameter': the_parameter, 'cut': the_cut,'freq': frequent_status, 'count': count})
     context = {
         'pupil': the_pupil,
         'nbar': 'panel',

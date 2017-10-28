@@ -20,10 +20,15 @@
         {% for event in all_events reversed %}
             <div class="list-group-item d-flex justify-content-between">
                 <div class="col-9 p-0">
-                    <div class="mb-1">
-                        <a href="{% url 'panel:event' pupil.pk event.pk %}{% if request.GET.view == 'recent' %}?view=recent{% endif %}"><h5 style="display: inline-block"><strong>{{ event.headline }}</strong></h5></a>
+                    <div class="mb-1 d-flex flex-row">
+                        <div class="d-flex align-self-center">
+                            <a href="{% url 'panel:event' pupil.pk event.pk %}{% if request.GET.view == 'recent' %}?view=recent{% endif %}" style="text-decoration:none">
+                                <h5><strong>{{ event.headline }}</strong></h5>
+                            </a>
+                        </div>
+                        <span class="badge badge-secondary d-flex align-self-start mr-2">{{ event.cut_set.all.count }}</span>
                     </div>
-                    <p class="mb-1 headline">{{ event.details }}</p>
+                    <p class="mb-1 headline">{{ event.details|safe }}</p>
                 </div>
                 <div class="col-3 p-0 d-flex align-items-end flex-column">
                     {% if request.user == event.updated_by %}

@@ -68,7 +68,7 @@ class EventForm(forms.ModelForm):
         model = Event
         fields = ['headline', 'date', 'details']
         widgets = {
-            'details': forms.Textarea(attrs={'rows': 4}),
+            'details': forms.Textarea(attrs={'style': 'display: none'})
         }
 
 

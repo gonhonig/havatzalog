@@ -18,8 +18,26 @@
             {% if field.errors %}
                 <div class="row form-group has-error">
                     <label class="col-md-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
-                    <div class="col-sm-{% if field.name == 'details' %}9{% else %}auto{% endif %}">
+                    {% if field.name == 'details' %}
+                    <div class="col-sm-9">
                         {{ field|add_class:"form-control" }}
+                        <div class="d-flex flex-row">
+                            <div class="d-flex flex-column" style="width: 100%">
+                                <div id="editable_div" contenteditable="true"></div>
+                            </div>
+                            <div class="btn-group-vertical d-flex flex-column mr-1 align-self-start" style="direction: ltr">
+                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'bold',false,null);"><small><span class="oi oi-bold"></span></small>
+                                </button>
+                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'underline',false,null);"><small><span class="oi oi-underline"></span></small>
+                                </button>
+                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand('italic',false,null);"><small><span class="oi oi-italic"></span></small>
+                                </button>
+                            </div>
+                        </div>
+                    {% else %}
+                    <div class="col-sm-auto">
+                        {{ field|add_class:"form-control" }}
+                    {% endif %}
                         <span class="help-block">
                             {% for error in  field.errors %}<span class="text-danger">{{ error }}</span>{% endfor %}
                         </span>
@@ -28,8 +46,26 @@
             {% else %}
                 <div class="row form-group">
                     <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
-                    <div class="col-sm-{% if field.name == 'details' %}9{% else %}auto{% endif %}">
+                    {% if field.name == 'details' %}
+                    <div class="col-sm-9">
                         {{ field|add_class:"form-control" }}
+                        <div class="d-flex flex-row">
+                            <div class="d-flex flex-column" style="width: 100%">
+                                <div id="editable_div" contenteditable="true"></div>
+                            </div>
+                            <div class="btn-group-vertical d-flex flex-column mr-1 align-self-start" style="direction: ltr">
+                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'bold',false,null);"><small><span class="oi oi-bold"></span></small>
+                                </button>
+                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'underline',false,null);"><small><span class="oi oi-underline"></span></small>
+                                </button>
+                                <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand('italic',false,null);"><small><span class="oi oi-italic"></span></small>
+                                </button>
+                            </div>
+                        </div>
+                    {% else %}
+                    <div class="col-sm-auto">
+                        {{ field|add_class:"form-control" }}
+                    {% endif %}
                     </div>
                 </div>
             {% endif %}
@@ -86,7 +122,7 @@
 
     <div class="form-group pt-3">
         <div class="col-sm-2">
-            <button type="submit" class="btn btn-outline-primary btn-sm">סיום</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm" onclick="getContent()">סיום</button>
         </div>
     </div>
     </form>
@@ -102,6 +138,25 @@
                 format: 'YYYY-MM-DD'
             }
         });
+        $('div[contenteditable]').keydown(function(e) {
+            if (e.keyCode === 13) {
+              document.execCommand('insertHTML', false, '<br><br>');
+              return false;
+            }
+        });
     });
+    </script>
+    <script type="text/javascript">
+        document.getElementById("editable_div").innerHTML = document.getElementById("id_event-details").value.replace(/\n/g, "<br />");
+
+        function getContent(){
+            document.getElementById("id_event-details").value = document.getElementById("editable_div").innerHTML;
+        }
+
+        document.querySelector("div[contenteditable]").addEventListener("paste", function(e) {
+            e.preventDefault();
+            var text = e.clipboardData.getData("text/plain");
+            document.execCommand("insertHTML", false, text);
+        });
     </script>
 {% endblock %}

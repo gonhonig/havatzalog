@@ -22,7 +22,7 @@
         </div>
         <p class="text-muted">{{ event.date }}</p>
         <p style="white-space: pre-line">
-            {{ event.details }}
+            {{ event.details|safe }}
         </p>
     </div>
     <hr>
