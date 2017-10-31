@@ -264,6 +264,20 @@ def pupil_create(request):
     return render(request, 'panel/pupil_form.html', context)
 
 
+def pupil_edit(request, pupil_id):
+    the_pupil = Pupil.objects.get(pk=pupil_id)
+    form = PupilEditForm(request.POST or None, initial=model_to_dict(the_pupil), instance=the_pupil)
+    if form.is_valid():
+        form.save()
+        return redirect(reverse('panel:pupil', kwargs={'pupil_id': pupil_id}))
+
+    context = {
+        'form': form,
+        'pupil': the_pupil
+    }
+    return render(request, 'panel/pupil_edit_form.html' , context)
+
+
 class ChangePermissions(UpdateView):
     model = Pupil
     form_class = ChangePermissionsForm

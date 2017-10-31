@@ -22,6 +22,7 @@
         <div class="col-auto text-left">
             <a class="btn btn-outline-info btn-sm" href="{% url 'panel:events' pupil.pk %}{% if view_type == 'recent' %}?view=recent{% endif %}" role="button">אירועים</a>
             <a class="btn btn-outline-info btn-sm" href="{% url 'panel:cut-add' pupil.pk %}" role="button">הוספת עידכון</a>
+            <a class="btn btn-outline-info btn-sm" href="{% url 'panel:pupil-edit' pupil.pk %}" role="button">יעדים</a>
             <a class="btn btn-outline-info btn-sm" href="{% url 'panel:change-permissions' pupil.pk %}" role="button">עריכת הרשאות</a>
         </div>
     </div>
@@ -32,9 +33,16 @@
                 <!-- כרטיסיה לפרמטר {{ cut.cut.parameter }}-->
                 <div class="col-lg-3 col-md-4 col-sm-6 mt-3">
                     <div class="card bg-light border-{% if cut.cut.status %}{{ cut.cut.status }}{% else %}secondary{% endif %}" id="{{ cut.cut.id }}">
-                        <div class="card-header text-center"><strong>{{ cut.parameter }}</strong> <span class="badge badge-secondary">{{ cut.count }}</span></div>
+                        <div class="card-header text-center">
+                            <strong>{{ cut.parameter }}</strong>
+                            <span class="badge badge-secondary">{{ cut.count }}</span>
+                            {% if cut.parameter in pupil.goals.all %}<span class="badge badge-info">יעד</span> {% endif %}
+                        </div>
                         <a href="/panel/{{ pupil.pk }}/{{ cut.parameter.pk }}/?view=recent" class="card-body btn btn-{% if cut.cut.status %}{{ cut.cut.status }}{% else %}secondary{% endif %} btn-square">
                             <h6 class="mt-2 headline">{{ cut.cut.headline }}</h6>
+                            {% if cut.cut.parameter in pupil.goals %}
+                                <span class="oi oi-target"></span>
+                            {% endif %}
                             {% if cut.freq %}
                             <h4 class="d-flex justify-content-end no-margin">
                                 <span class="badge badge-{{ cut.freq }} align-self-end freq-badge">
@@ -60,7 +68,11 @@
                 <!-- כרטיסיה לפרמטר {{ cut.cut.parameter }}-->
                 <div class="col-lg-3 col-md-4 col-sm-6 mt-3">
                     <div class="card bg-light border-{% if cut.cut.status %}{{ cut.cut.status }}{% else %}secondary{% endif %}" id="{{ cut.cut.id }}">
-                        <div class="card-header text-center pr-2 pl-2"><strong>{{ cut.parameter }}</strong> <span class="badge badge-secondary">{{ cut.count }}</div>
+                        <div class="card-header text-center pr-2 pl-2">
+                            <strong>{{ cut.parameter }}</strong>
+                            <span class="badge badge-secondary">{{ cut.count }}</span>
+                            {% if cut.parameter in pupil.goals.all %}<span class="badge badge-info">יעד</span> {% endif %}
+                        </div>
                         <a href="/panel/{{ pupil.pk }}/{{ cut.parameter.pk }}" class="card-body btn btn-{% if cut.cut.status %}{{ cut.cut.status }}{% else %}secondary{% endif %} btn-square">
                             <h6 class="mt-2 headline">{{ cut.cut.headline }}</h6>
                             {% if cut.freq %}

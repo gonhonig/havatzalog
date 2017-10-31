@@ -6,6 +6,7 @@ app_name = 'panel'
 urlpatterns = [
     url(r'^$', views.selector, name="selector"),
     url(r'^(?P<pupil_id>[0-9]+)/$', views.pupil, name="pupil"),
+    url(r'^(?P<pupil_id>[0-9]+)/goals/$', views.pupil_edit, name="pupil-edit"),
     url(r'^(?P<pk>[0-9]+)/edit/$', views.ChangePermissions.as_view(), name="change-permissions"),
     url(r'^(?P<pupil_id>[0-9]+)/(?P<parameter_id>[0-9]+)/$', views.parameter, name="parameter"),
     url(r'^(?P<pupil_id>[0-9]+)/add/$', views.cut_create, name="cut-add"),

@@ -6,24 +6,6 @@ from django.contrib.contenttypes.fields import GenericRelation
 from comments.models import Comment
 
 
-class Pupil(models.Model):
-    name = models.CharField(max_length=250, verbose_name="שם")
-    YEARS = (
-        (1, 'א'),
-        (2, 'ב'),
-    )
-    year = models.IntegerField(choices=YEARS, verbose_name="שנה")
-    PLATOONS = (
-        (1, '1'),
-        (2, '2'),
-    )
-    platoon = models.IntegerField(choices=PLATOONS, verbose_name="מחלקה")
-    can_read = models.ManyToManyField(User, verbose_name="מורשים")
-
-    def __str__(self):
-        return self.name
-
-
 class Parameter(models.Model):
     name = models.CharField(max_length=250, verbose_name="שם")
     CATEGORY = (
@@ -39,6 +21,26 @@ class Parameter(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Pupil(models.Model):
+    name = models.CharField(max_length=250, verbose_name="שם")
+    YEARS = (
+        (1, 'א'),
+        (2, 'ב'),
+    )
+    year = models.IntegerField(choices=YEARS, verbose_name="שנה")
+    PLATOONS = (
+        (1, '1'),
+        (2, '2'),
+    )
+    platoon = models.IntegerField(choices=PLATOONS, verbose_name="מחלקה")
+    can_read = models.ManyToManyField(User, verbose_name="מורשים")
+    goals = models.ManyToManyField(Parameter, blank=True, verbose_name="יעדים")
+
+    def __str__(self):
+        return self.name
+
 
 
 class Event(models.Model):

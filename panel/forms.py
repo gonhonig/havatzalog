@@ -42,6 +42,15 @@ class PupilForm(forms.ModelForm):
         }
 
 
+class PupilEditForm(forms.ModelForm):
+    class Meta:
+        model = Pupil
+        fields = ['goals']
+        widgets = {
+            'goals': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'}),
+        }
+
+
 class ParameterForm(forms.ModelForm):
     class Meta:
         model = Parameter
