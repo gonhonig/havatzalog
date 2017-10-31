@@ -1,15 +1,16 @@
-from django.shortcuts import render, reverse, redirect
-from .forms import *
-from .models import Cut, Pupil, Parameter
-from django.views.generic.edit import UpdateView, DeleteView
+import datetime
+
+from django.contrib.contenttypes.models import ContentType
 from django.db.models import Count
 from django.forms import modelformset_factory
 from django.forms.models import model_to_dict
-import datetime
-from .tables import ExportCuts, ExportEvents
-from django_tables2.config import RequestConfig
-from django_tables2.export.export import TableExport
-from django.db.models import Q
+from django.shortcuts import render, reverse, redirect
+from django.views.generic.edit import UpdateView
+
+from comments.forms import CommentForm
+from comments.models import Comment
+from .forms import *
+from .models import Cut, Pupil, Parameter
 
 
 def selector(request, extra = None):
@@ -86,11 +87,27 @@ def parameter(request, pupil_id, parameter_id):
     if the_pupil not in the_user.pupil_set.all():
         return selector(request, 'אל תנסה/י לצפות בחניכים שאינך מורשה אליהם!')
     the_parameter = Parameter.objects.get(pk=parameter_id)
+
+    comment_form = CommentForm(request.POST or None)
+    if comment_form.is_valid():
+        object_id = request.POST['cut_id']
+        content_type = ContentType.objects.get_for_model(Cut)
+        content = comment_form.cleaned_data.get("content")
+        new_comment, created = Comment.objects.get_or_create(
+            user = the_user,
+            content_type = content_type,
+            object_id = object_id,
+            content = content,
+        )
+
+        return redirect(reverse('panel:parameter', kwargs={'pupil_id': pupil_id, 'parameter_id': parameter_id}))
+
     context = {
         'pupil': the_pupil,
         'parameter': the_parameter,
         'nbar': 'panel',
-        'all_cuts': the_pupil.cut_set.filter(parameter=parameter_id)
+        'all_cuts': the_pupil.cut_set.filter(parameter=parameter_id),
+        'comment_form': comment_form,
     }
     return render(request, 'panel/parameter.html', context)
 
@@ -115,11 +132,31 @@ def event(request, pupil_id, event_id):
     if the_pupil not in the_user.pupil_set.all():
         return selector(request, 'אל תנסה/י לצפות בחניכים שאינך מורשה אליהם!')
     the_event = Event.objects.get(pk=event_id)
+
+    comment_form = CommentForm(request.POST or None)
+    if comment_form.is_valid():
+        try:
+            object_id = request.POST['cut_id']
+            content_type = ContentType.objects.get_for_model(Cut)
+        except:
+            object_id = request.POST['event_id']
+            content_type = ContentType.objects.get_for_model(Event)
+        content = comment_form.cleaned_data.get("content")
+        new_comment, created = Comment.objects.get_or_create(
+            user=the_user,
+            content_type=content_type,
+            object_id=object_id,
+            content=content,
+        )
+
+        return redirect(reverse('panel:event', kwargs={'pupil_id': pupil_id, 'event_id': event_id}))
+
     context = {
         'pupil': the_pupil,
         'event': the_event,
         'nbar': 'panel',
-        'all_cuts': the_pupil.cut_set.filter(event_id=event_id)
+        'all_cuts': the_pupil.cut_set.filter(event_id=event_id),
+        'comment_form': comment_form
     }
     return render(request, 'panel/event.html', context)
 
@@ -332,10 +369,7 @@ def event_delete(request, pupil_id, event_id):
 def event_create(request, pupil_id):
     CutFormSet = modelformset_factory(
         Cut,
-        fields=('parameter', 'status', 'tags', 'private', 'details'),
-        widgets={'parameter': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'}),
-                 'details': forms.Textarea(attrs={'rows':3, 'cols':50}),
-                 },
+        form=CutFormEvent,
         extra=10
     )
     if request.method == 'POST':
@@ -410,15 +444,3 @@ def event_edit(request, pupil_id, event_id):
             'pupil': Pupil.objects.get(pk=pupil_id),
         }
         return render(request, 'panel/event_edit_form.html', context)
-
-
-# def export(request):
-#     cuts_export = ExportCuts(Cut.objects.filter(pupil__can_read=request.user).exclude(Q(private=True)&~Q(updated_by=request.user)))
-#     events_export = ExportEvents(Event.objects.filter(pupil__can_read=request.user))
-#     RequestConfig(request).configure(cuts_export)
-#     export_format = request.GET.get('_export', None)
-#     if TableExport.is_valid_format(export_format):
-#         exporter = TableExport(export_format, cuts_export)
-#         return exporter.response('table.{}'.format(export_format))
-#
-#     return  render(request, 'panel/export.html', {})

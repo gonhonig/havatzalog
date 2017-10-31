@@ -1,6 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
 from taggit.managers import TaggableManager
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericRelation
+from comments.models import Comment
 
 
 class Pupil(models.Model):
@@ -44,6 +47,7 @@ class Event(models.Model):
     details = models.TextField(verbose_name="פירוט")
     date = models.DateField(verbose_name="תאריך")
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="עודכן על ידי", default=None)
+    comments = GenericRelation(Comment)
 
     def __str__(self):
         return self.headline
@@ -66,6 +70,7 @@ class Cut(models.Model):
     tags = TaggableManager(verbose_name="תגיות", blank=True)
     private = models.BooleanField(default=False, blank=True, verbose_name="עדכון פרטי")
     event = models.ForeignKey(Event, blank=True, null=True)
+    comments = GenericRelation(Comment)
 
     def __str__(self):
         return self.headline
@@ -73,6 +78,8 @@ class Cut(models.Model):
     def post_time(self):
         return str(self.updated_time.hour) + ':' + str(self.updated_time.minute) + ' - ' + str(self.updated_time.day) + '/' + str(self.updated_time.month)
 
+    def get_content_type(self):
+        return ContentType.objects.get_for_model(self.__class__)
 
 
 

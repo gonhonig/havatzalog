@@ -178,3 +178,8 @@ input:checked + .slider:before {
     resize: vertical;
     overflow: auto;
 }
+
+.comment-card{
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}

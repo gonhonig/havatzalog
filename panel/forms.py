@@ -19,8 +19,8 @@ class CutFormEvent(forms.ModelForm):
         model = Cut
         fields = ['parameter', 'status', 'details', 'tags', 'private']
         widgets = {
-            'details': forms.Textarea(attrs={'rows': 4}),
-            'parameter': forms.SelectMultiple()
+            'parameter': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'}),
+            'details': forms.Textarea(attrs={'rows': 3, 'cols': 50}),
         }
 
 

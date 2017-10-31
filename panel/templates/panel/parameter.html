@@ -1,5 +1,5 @@
 {% extends 'panel/base.html' %}
-
+{% load widget_tweaks %}
 {% block title %} {{ pupil }} {% endblock %}
 
 {% block content %}
@@ -45,16 +45,20 @@
                     {% endif %}
                 </div>
                 <div class="col-auto p-0 d-flex align-items-end flex-column">
-                    {% if request.user == cut.updated_by %}
                     <div class="d-flex flex-row">
-                        <a class="btn btn-outline-success btn-circle ml-1" href="{% url 'panel:cut-edit' pupil.pk parameter.pk cut.pk %}">
+                        <small class="text-primary">{% if cut.comments.all %}{{ cut.comments.all.count }}&nbsp{% endif %}</small>
+                        <button type="button" class="btn btn-outline-primary btn-circle" data-toggle="collapse" data-target="#add_comment_for_{{ cut.pk }}">
+                                <small><span class="oi oi-comment-square"></span></small>
+                        </button>
+                        {% if request.user == cut.updated_by %}
+                        <a class="btn btn-outline-success btn-circle mr-1" href="{% url 'panel:cut-edit' pupil.pk parameter.pk cut.pk %}">
                             <small><span class="oi oi-pencil"></span></small>
                         </a>
-                        <button type="button" class="btn btn-outline-danger btn-circle" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
+                        <button type="button" class="btn btn-outline-danger btn-circle mr-1" data-toggle="modal" data-target="#delete_{{ cut.pk }}">
                             <small><span class="oi oi-x"></span></small>
                         </button>
+                        {% endif %}
                     </div>
-                    {% endif %}
                     <div style="text-align: left" class="mt-auto">
                         <small class="text-muted">עודכן ע"י {{ cut.updated_by.first_name }} {{ cut.updated_by.last_name }}</small>
                         <small class="text-muted" style="display: block">{{ cut.updated_time }}</small>
@@ -74,6 +78,36 @@
                     </div>
                   </div>
                 </div>
+            </div>
+            <!--חלונית להוספת תגובה-->
+            <div class="collapse" id="add_comment_for_{{ cut.pk }}">
+              <div class="card card-body comment-card mb-2">
+                  <form action="" method="post" class="form-inline">
+                      {% csrf_token %}
+                      <div class="col p-0">
+                          {{ comment_form.content|add_class:"form-control"}}
+                      </div>
+                      <div class="col-auto p-0">
+                          <button class="btn btn-outline-info mr-2" type="submit" name="cut_id" value="{{ cut.pk }}">פרסום</button>
+                      </div>
+                  </form>
+                {% if cut.comments.all %}
+                  <ul class="list-group pr-0 mt-2">
+                      {% for comment in cut.comments.all %}
+                      <li class="list-group-item">
+                        <div class="row">
+                            <div class="col">
+                                {{ comment.content }}
+                            </div>
+                            <div class="col-auto">
+                                <small class="text-muted">ע"י {{ comment.user.first_name }} {{ comment.user.last_name }} ב-{{ comment.timestamp }}</small>
+                            </div>
+                        </div>
+                      </li>
+                      {% endfor %}
+                  </ul>
+                {% endif %}
+              </div>
             </div>
         {% endfor %}
     </div>

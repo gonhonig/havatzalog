@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'panel.apps.PanelConfig',
     'accounts.apps.AccountsConfig',
     'search.apps.SearchConfig',
+    'comments.apps.CommentsConfig',
+    'export.apps.ExportConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
