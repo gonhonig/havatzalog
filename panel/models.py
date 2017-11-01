@@ -37,6 +37,7 @@ class Pupil(models.Model):
     platoon = models.IntegerField(choices=PLATOONS, verbose_name="מחלקה")
     can_read = models.ManyToManyField(User, verbose_name="מורשים")
     goals = models.ManyToManyField(Parameter, blank=True, verbose_name="יעדים")
+    details = models.TextField(verbose_name="פרטים", blank=True)
 
     def __str__(self):
         return self.name

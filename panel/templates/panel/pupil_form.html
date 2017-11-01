@@ -1,5 +1,6 @@
 {% extends 'panel/base.html' %}
 {% load staticfiles %}
+{% load widget_tweaks %}
 {% block title %} הוספת חניך/ה {% endblock %}
 
 {% block content %}
@@ -9,7 +10,17 @@
         <h5 class="align-middle side-margin"><strong>הוספת חניך/ה</strong></h5>
     </div><br>
     <form class="form-horizontal"action="" method="post" enctype="multipart/form-data" autocomplete="off">
-    {% include 'panel/form-template.html' %}
+    {% csrf_token %}
+        <div class="form-group" style="padding-right: 15px">
+            {% for field in form %}
+                <div class="row form-group">
+                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
+                    <div class="col-sm-{% if field.name == 'can_read' %}9{% else %}auto{% endif %}">
+                        {{ field|add_class:"form-control" }}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
     <div class="form-group">
         <div class="col-sm-2">
             <button type="submit" class="btn btn-outline-primary btn-sm">הוספה</button>

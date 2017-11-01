@@ -1,13 +1,13 @@
 {% extends 'panel/base.html' %}
 {% load staticfiles %}
 {% load widget_tweaks %}
-{% block title %} יעדים | {{ pupil.name }} {% endblock %}
+{% block title %} פרטים | {{ pupil.name }} {% endblock %}
 
 {% block content %}
 
     <!--כותרת-->
     <div>
-        <h5 class="align-middle side-margin">יעדים לחניך <strong>{{ pupil.name }}</strong></h5>
+        <h5 class="align-middle side-margin">פרטים: <strong>{{ pupil.name }}</strong></h5>
     </div><br>
     <form class="form-horizontal"action="" method="post" enctype="multipart/form-data" autocomplete="off">
         {% csrf_token %}
@@ -15,17 +15,66 @@
             {% for field in form %}
                 <div class="row form-group">
                     <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}{% if field.field.required %}&nbsp;<span class="text-danger">*</span>{% endif %}</label>
-                    <div class="col-4">
+                    {% if field.name == 'goals' %}
+                    <div class="col-sm-7">
                         {{ field|add_class:"form-control" }}
                     </div>
+                    <div class="col-sm-1">
+                        <a href="{% url 'panel:parameter-add-from-pupil-edit' pupil.pk %}" class="btn btn-outline-secondary" role="button">פרמטר חדש</a>
+                    </div>
+                    {% elif field.name == 'details' %}
+                    {{ field }}
+                    <div class="col-sm-9 d-flex flex-row">
+                        <div class="d-flex flex-column" style="width: 100%">
+                            <div id="editable_div" contenteditable="true"></div>
+                        </div>
+                        <div class="btn-group-vertical d-flex flex-column mr-1 align-self-start" style="direction: ltr">
+                            <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'bold',false,null);"><small><span class="oi oi-bold"></span></small>
+                            </button>
+                            <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand( 'underline',false,null);"><small><span class="oi oi-underline"></span></small>
+                            </button>
+                            <button class="btn btn-sm btn-white" type="button" onclick="document.execCommand('italic',false,null);"><small><span class="oi oi-italic"></span></small>
+                            </button>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="col-sm-9">
+                        {{ field|add_class:"form-control" }}
+                    </div>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
     <div class="form-group">
         <div class="col-sm-2">
-            <button type="submit" class="btn btn-outline-primary btn-sm">סיום</button>
+            <button type="submit" class="btn btn-outline-primary btn-sm" onclick="getContent()">סיום</button>
         </div>
     </div>
     </form>
+
+    <script type="text/javascript" src="{% static 'panel/jquery/jquery-3.2.1.min.js' %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('div[contenteditable]').keydown(function(e) {
+            if (e.keyCode === 13) {
+              document.execCommand('insertHTML', false, '<br><br>');
+              return false;
+            }
+        });
+    });
+    </script>
+    <script type="text/javascript">
+        document.getElementById("editable_div").innerHTML = document.getElementById("id_details").value.replace(/\n/g, "<br />");
+
+        function getContent(){
+            document.getElementById("id_details").value = document.getElementById("editable_div").innerHTML;
+        };
+
+        document.querySelector("div[contenteditable]").addEventListener("paste", function(e) {
+            e.preventDefault();
+            var text = e.clipboardData.getData("text/plain");
+            document.execCommand("insertHTML", false, text);
+        });
+    </script>
 
 {% endblock %}

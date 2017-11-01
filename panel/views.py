@@ -246,7 +246,7 @@ def cut_edit2(request, pupil_id, event_id, cut_id):
 
 
 def pupil_create(request):
-    form = PupilForm(request.POST or None)
+    form = PupilForm(request.POST or None, initial={'can_read': request.user})
     if form.is_valid():
         instance = form.save(commit=False)
         instance.save()
@@ -265,11 +265,20 @@ def pupil_create(request):
 
 
 def pupil_edit(request, pupil_id):
+    the_user = request.user
     the_pupil = Pupil.objects.get(pk=pupil_id)
+    if the_pupil not in the_user.pupil_set.all():
+        return selector(request, 'אל תנסה/י לצפות בחניכים שאינך מורשה אליהם!')
+
     form = PupilEditForm(request.POST or None, initial=model_to_dict(the_pupil), instance=the_pupil)
     if form.is_valid():
         form.save()
         return redirect(reverse('panel:pupil', kwargs={'pupil_id': pupil_id}))
+
+    can_read_choices = ()
+    for user in form.fields['can_read'].queryset:
+        can_read_choices += ((str(user.pk), user.first_name + ' ' + user.last_name),)
+    form.fields['can_read'].choices = can_read_choices
 
     context = {
         'form': form,
@@ -278,35 +287,23 @@ def pupil_edit(request, pupil_id):
     return render(request, 'panel/pupil_edit_form.html' , context)
 
 
-class ChangePermissions(UpdateView):
-    model = Pupil
-    form_class = ChangePermissionsForm
-    template_name = 'panel/change_permissions_form.html'
-
-    def get_success_url(self):
-        return reverse('panel:pupil', kwargs={'pupil_id': self.object.pk})
-
-    def get_form(self, form_class=None):
-        form = super(ChangePermissions, self).get_form(form_class)
-        can_read_choices = ()
-        for user in form.fields['can_read'].queryset:
-            can_read_choices += ((str(user.pk), user.first_name + ' ' + user.last_name),)
-        form.fields['can_read'].choices = can_read_choices
-        return form
-
-    def dispatch(self, request, *args, **kwargs):
-        the_user = request.user
-        the_pupil = Pupil.objects.get(pk=int(kwargs['pk']))
-        if the_pupil not in the_user.pupil_set.all():
-            return selector(request, 'אל תנסה/י לערוך חניכים שאינך מורשה אליהם!')
-        return super(ChangePermissions, self).dispatch(request, *args, **kwargs)
-
-
 def parameter_create(request, pupil_id):
     form = ParameterForm(request.POST or None)
     if form.is_valid():
         instance = form.save()
         return redirect(reverse('panel:cut-add', kwargs={'pupil_id': pupil_id}))
+    form.fields['category'].widget.attrs['class'] = "select2"
+    context = {
+        'form': form
+    }
+    return render(request, 'panel/parameter_form.html', context)
+
+
+def parameter_create_from_pupil_edit(request, pupil_id):
+    form = ParameterForm(request.POST or None)
+    if form.is_valid():
+        instance = form.save()
+        return redirect(reverse('panel:pupil-edit', kwargs={'pupil_id': pupil_id}))
     form.fields['category'].widget.attrs['class'] = "select2"
     context = {
         'form': form

@@ -38,16 +38,18 @@ class PupilForm(forms.ModelForm):
         model = Pupil
         fields = ['name', 'year', 'platoon', 'can_read']
         widgets = {
-            'can_read': forms.CheckboxSelectMultiple()
+            'can_read': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'})
         }
 
 
 class PupilEditForm(forms.ModelForm):
     class Meta:
         model = Pupil
-        fields = ['goals']
+        fields = ['goals', 'details', 'can_read']
         widgets = {
             'goals': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'}),
+            'details': forms.Textarea(attrs={'style': 'display: none'}),
+            'can_read': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'})
         }
 
 
@@ -61,15 +63,6 @@ class ParameterForm(forms.ModelForm):
         if name in Parameter.objects.values_list('name', flat=True):
             raise forms.ValidationError("הפרמטר כבר קיים")
         return name
-
-
-class ChangePermissionsForm(forms.ModelForm):
-    class Meta:
-        model = Pupil
-        fields = ['can_read']
-        widgets = {
-            'can_read': forms.CheckboxSelectMultiple()
-        }
 
 
 class EventForm(forms.ModelForm):

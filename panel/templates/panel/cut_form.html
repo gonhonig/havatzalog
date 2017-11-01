@@ -56,7 +56,7 @@
                     </div>
                 {% if field.name == 'parameter' %}
                     <div class="col-sm-auto">
-                        <a href="/panel/{{ pupil.pk }}/add/parameter-add" class="btn btn-outline-secondary" role="button">פרמטר חדש</a>
+                        <a href="{% url 'panel:parameter-add' pupil.pk %}" class="btn btn-outline-secondary" role="button">פרמטר חדש</a>
                     </div>
                 {% endif %}
                 </div>

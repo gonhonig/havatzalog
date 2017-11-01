@@ -22,8 +22,7 @@
         <div class="col-auto text-left">
             <a class="btn btn-outline-info btn-sm" href="{% url 'panel:events' pupil.pk %}{% if view_type == 'recent' %}?view=recent{% endif %}" role="button">אירועים</a>
             <a class="btn btn-outline-info btn-sm" href="{% url 'panel:cut-add' pupil.pk %}" role="button">הוספת עידכון</a>
-            <a class="btn btn-outline-info btn-sm" href="{% url 'panel:pupil-edit' pupil.pk %}" role="button">יעדים</a>
-            <a class="btn btn-outline-info btn-sm" href="{% url 'panel:change-permissions' pupil.pk %}" role="button">עריכת הרשאות</a>
+            <a class="btn btn-outline-info btn-sm" href="{% url 'panel:pupil-edit' pupil.pk %}" role="button">פרטי חניך</a>
         </div>
     </div>
 
