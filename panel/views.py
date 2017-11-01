@@ -306,7 +306,7 @@ def parameter_create(request, pupil_id):
     form = ParameterForm(request.POST or None)
     if form.is_valid():
         instance = form.save()
-        return redirect(reverse('panel:cut-add-specific', kwargs={'pupil_id': pupil_id, 'parameter_id': instance.id}))
+        return redirect(reverse('panel:cut-add', kwargs={'pupil_id': pupil_id}))
     form.fields['category'].widget.attrs['class'] = "select2"
     context = {
         'form': form
