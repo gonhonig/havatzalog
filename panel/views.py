@@ -381,6 +381,7 @@ def event_delete(request, pupil_id, event_id):
 
 
 def event_create(request, pupil_id):
+    the_pupil = Pupil.objects.get(pk=pupil_id)
     CutFormSet = modelformset_factory(
         Cut,
         form=CutFormEvent,
@@ -407,25 +408,31 @@ def event_create(request, pupil_id):
                 cut.save()
             cut_forms.save_m2m()
             return redirect(reverse('panel:events', kwargs={'pupil_id': pupil_id}))
+        else:
+            context = {
+                'event': event,
+                'cut_forms': cut_forms,
+                'pupil': the_pupil,
+                'has_errors': True,
+            }
+            return render(request, 'panel/event_form.html', context)
     else:
         cut_forms = CutFormSet(prefix='cuts', queryset=Cut.objects.none())
         context = {
             'event': EventForm(prefix='event'),
             'cut_forms': cut_forms,
-            'pupil': Pupil.objects.get(pk=pupil_id),
+            'pupil': the_pupil,
+            'has_errors': False,
         }
         return render(request, 'panel/event_form.html', context)
 
 
 def event_edit(request, pupil_id, event_id):
+    the_pupil = Pupil.objects.get(pk=pupil_id)
     the_event = Event.objects.get(pk=event_id)
-    # event_cuts = Cut.objects.filter(event=event_id)
     CutFormSet = modelformset_factory(
         Cut,
-        fields=('parameter', 'status', 'tags', 'private', 'details'),
-        widgets={'parameter': forms.SelectMultiple(attrs={'class': 'select2', 'multiple': 'multiple'}),
-                 'details': forms.Textarea(attrs={'rows':3, 'cols':50}),
-                 },
+        form=CutFormEvent,
         extra=10
     )
     if request.method == 'POST':
@@ -449,12 +456,21 @@ def event_edit(request, pupil_id, event_id):
                 cut.save()
             cut_forms.save_m2m()
             return redirect(reverse('panel:events', kwargs={'pupil_id': pupil_id}))
+        else:
+            context = {
+                'event': event,
+                'cut_forms': cut_forms,
+                'pupil': the_pupil,
+                'has_errors': True,
+            }
+            return render(request, 'panel/event_form.html', context)
     else:
         cut_forms = CutFormSet(prefix='cuts', queryset=Cut.objects.none())
         context = {
             'event': the_event,
             'event_form': EventForm(prefix='event', initial=model_to_dict(the_event)),
             'cut_forms': cut_forms,
-            'pupil': Pupil.objects.get(pk=pupil_id),
+            'pupil': the_pupil,
+            'has_errors': False,
         }
         return render(request, 'panel/event_edit_form.html', context)

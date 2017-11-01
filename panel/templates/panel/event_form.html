@@ -48,6 +48,9 @@
             <a href="{% url 'panel:parameter-add-from-event' pupil.pk %}" class="btn btn-outline-secondary btn-sm" role="button">פרמטר חדש</a>
         </div>
     </div>
+    {% if has_errors %}
+        <span class="badge badge-danger mb-2">יש למלא את כל השדות הדרושים בכל עידכון</span>
+    {% endif %}
     {{ cut_forms.management_form }}
     <ul class="list-group p-0">
         {% for cut_form in cut_forms %}
@@ -116,6 +119,8 @@
     });
     </script>
     <script type="text/javascript">
+        document.getElementById("editable_div").innerHTML = document.getElementById("id_event-details").value.replace(/\n/g, "<br />");
+
         function getContent(){
             document.getElementById("id_event-details").value = document.getElementById("editable_div").innerHTML;
         };
