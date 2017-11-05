@@ -31,11 +31,6 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'widget_tweaks',
-    'taggit',
-    'taggit_templatetags2',
-    'django_tables2',
-    'psycopg2',
     'panel.apps.PanelConfig',
     'accounts.apps.AccountsConfig',
     'search.apps.SearchConfig',
@@ -48,6 +43,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.postgres',
+    'widget_tweaks',
+    'taggit',
+    'taggit_templatetags2',
+    'django_tables2',
+    'psycopg2',
+    'notifications',
 ]
 
 MIDDLEWARE = [

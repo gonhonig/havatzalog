@@ -1,0 +1,16 @@
+{% extends 'panel/base.html' %}
+{% load notifications_tags %}
+{% block title %} {{ pupil }} {% endblock %}
+
+{% block content %}
+    <h4>כל ההתראות</h4>
+    {% if not notifications %}
+        <h5 class="text-muted">אין התראות</h5>
+    {% else %}
+    <div class="container">
+    {% for notif in notifications %}
+        <a href="{{ notif.description }}" class="notif">{{ notif.verb|safe }}</a><br/>
+    {% endfor %}
+    </div>
+    {% endif %}
+{% endblock %}

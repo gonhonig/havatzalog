@@ -183,3 +183,20 @@ input:checked + .slider:before {
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
+
+.notif:link {
+    color: black;
+    text-decoration: none;
+}
+.notif:visited {
+    color: black;
+    text-decoration: none;
+}
+.notif:hover {
+    color: rgba(0,0,0,.5);
+    text-decoration: none;
+}
+.notif:active {
+    color: darkgray;
+    text-decoration: none;
+}
