@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'search.apps.SearchConfig',
     'comments.apps.CommentsConfig',
+    'tasks.apps.TasksConfig',
     'export.apps.ExportConfig',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -9,6 +9,8 @@ from notifications.signals import notify
 
 from comments.forms import CommentForm
 from comments.models import Comment
+from tasks.forms import TaskForm
+from tasks.models import Task
 from .forms import *
 from .models import Cut, Pupil, Parameter
 
@@ -88,44 +90,71 @@ def parameter(request, pupil_id, parameter_id):
         return selector(request, 'אל תנסה/י לצפות בחניכים שאינך מורשה אליהם!')
     the_parameter = Parameter.objects.get(pk=parameter_id)
 
-    comment_form = CommentForm(request.POST or None)
-    if comment_form.is_valid():
-        object_id = request.POST['cut_id']
-        content_type = ContentType.objects.get_for_model(Cut)
-        content = comment_form.cleaned_data.get("content")
-        new_comment, created = Comment.objects.get_or_create(
-            user = the_user,
-            content_type = content_type,
-            object_id = object_id,
-            content = content,
-        )
+    if request.method == 'POST':
+        if 'deadline' in request.POST:
+            task_form = TaskForm(request.POST)
+            if task_form.is_valid():
+                object_id = request.POST['cut_id']
+                content_type = ContentType.objects.get_for_model(Cut)
+                content = task_form.cleaned_data.get("content")
+                area = task_form.cleaned_data.get("area")
+                deadline = task_form.cleaned_data.get("deadline")
 
-        recipients = the_pupil.can_read.exclude(pk=the_user.pk)
-        if recipients:
-            the_cut = Cut.objects.get(pk=object_id)
-            user_name = "{} {} ".format(the_user.first_name, the_user.last_name)
-            message = '<strong>{}</strong> הגיב/ה על העדכון <strong>{}</strong> השייך ל<strong>{}</strong>'.format(user_name,
-                                                                                                                 the_cut.headline,
-                                                                                                                 the_pupil.name)
-            notify.send(
-                sender=the_user,
-                recipient=recipients,
-                verb=message,
-                action_object=new_comment,
-                target=the_pupil,
-                description='/panel/{}/{}'.format(pupil_id, parameter_id)
-            )
+                new_task, created = Task.objects.get_or_create(
+                    user=the_user,
+                    content_type=content_type,
+                    object_id=object_id,
+                    content=content,
+                    area=area,
+                    deadline=deadline,
+                )
+                return redirect(reverse('panel:parameter', kwargs={'pupil_id': pupil_id, 'parameter_id': parameter_id}))
+        else:
+            comment_form = CommentForm(request.POST)
+            if comment_form.is_valid():
+                object_id = request.POST['cut_id']
+                content_type = ContentType.objects.get_for_model(Cut)
+                content = comment_form.cleaned_data.get("content")
+                new_comment, created = Comment.objects.get_or_create(
+                    user = the_user,
+                    content_type = content_type,
+                    object_id = object_id,
+                    content = content,
+                )
 
-        return redirect(reverse('panel:parameter', kwargs={'pupil_id': pupil_id, 'parameter_id': parameter_id}))
+                recipients = the_pupil.can_read.exclude(pk=the_user.pk)
+                if recipients:
+                    the_cut = Cut.objects.get(pk=object_id)
+                    user_name = "{} {} ".format(the_user.first_name, the_user.last_name)
+                    message = '<strong>{}</strong> הגיב/ה על העדכון <strong>{}</strong> השייך ל<strong>{}</strong>'.format(user_name,
+                                                                                                                         the_cut.headline,
+                                                                                                                         the_pupil.name)
+                    notify.send(
+                        sender=the_user,
+                        recipient=recipients,
+                        verb=message,
+                        action_object=new_comment,
+                        target=the_pupil,
+                        description='/panel/{}/{}'.format(pupil_id, parameter_id)
+                    )
 
-    context = {
-        'pupil': the_pupil,
-        'parameter': the_parameter,
-        'nbar': 'panel',
-        'all_cuts': the_pupil.cut_set.filter(parameter=parameter_id),
-        'comment_form': comment_form,
-    }
-    return render(request, 'panel/parameter.html', context)
+                return redirect(reverse('panel:parameter', kwargs={'pupil_id': pupil_id, 'parameter_id': parameter_id}))
+
+    else:
+        context = {
+            'pupil': the_pupil,
+            'parameter': the_parameter,
+            'nbar': 'panel',
+            'all_cuts': the_pupil.cut_set.filter(parameter=parameter_id),
+            'comment_form': CommentForm(),
+            'task_form': TaskForm(),
+        }
+        t_obj = request.session.get('t_obj')
+        if t_obj:
+            context['t_obj'] = t_obj
+            request.session['t_obj'] = None
+
+        return render(request, 'panel/parameter.html', context)
 
 
 def events(request, pupil_id):
@@ -149,51 +178,83 @@ def event(request, pupil_id, event_id):
         return selector(request, 'אל תנסה/י לצפות בחניכים שאינך מורשה אליהם!')
     the_event = Event.objects.get(pk=event_id)
 
-    comment_form = CommentForm(request.POST or None)
-    if comment_form.is_valid():
-        try:
-            object_id = request.POST['cut_id']
-            content_type = ContentType.objects.get_for_model(Cut)
-            the_object = Cut.objects.get(pk=object_id)
-            notif = 'העדכון'
-        except:
-            object_id = request.POST['event_id']
-            content_type = ContentType.objects.get_for_model(Event)
-            the_object = Event.objects.get(pk=object_id)
-            notif = 'האירוע'
-        content = comment_form.cleaned_data.get("content")
-        new_comment, created = Comment.objects.get_or_create(
-            user=the_user,
-            content_type=content_type,
-            object_id=object_id,
-            content=content,
-        )
+    if 'deadline' in request.POST:
+        task_form = TaskForm(request.POST)
+        if task_form.is_valid():
+            rel_object = request.POST['obj_id'].split("=")
+            object_model = rel_object[0]
+            object_id = rel_object[1]
+            if object_model == 'cut':
+                content_type = ContentType.objects.get_for_model(Cut)
+            else:
+                content_type = ContentType.objects.get_for_model(Event)
+            content = task_form.cleaned_data.get("content")
+            area = task_form.cleaned_data.get("area")
+            deadline = task_form.cleaned_data.get("deadline")
 
-        recipients = the_pupil.can_read.exclude(pk=the_user.pk)
-        if recipients:
-            user_name = "{} {} ".format(the_user.first_name, the_user.last_name)
-            message = '<strong>{}</strong> הגיב/ה על {} <strong>{}</strong> השייך ל<strong>{}</strong>'.format(user_name,
-                                                                                                             notif,
-                                                                                                             the_object.headline,
-                                                                                                             the_pupil.name)
-            notify.send(
-                sender=the_user,
-                recipient=recipients,
-                verb=message,
-                action_object=new_comment,
-                target=the_pupil,
-                description='/panel/{}/events/{}'.format(pupil_id, event_id)
+            new_task, created = Task.objects.get_or_create(
+                user=the_user,
+                content_type=content_type,
+                object_id=object_id,
+                content=content,
+                area=area,
+                deadline=deadline,
+            )
+            return redirect(reverse('panel:event', kwargs={'pupil_id': pupil_id, 'event_id': event_id}))
+    else:
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            rel_object = request.POST['obj_id'].split("=")
+            object_model = rel_object[0]
+            object_id = rel_object[1]
+            if object_model == 'cut':
+                content_type = ContentType.objects.get_for_model(Cut)
+                notif = 'האירוע'
+                the_object = Cut.objects.get(pk=object_id)
+            else:
+                content_type = ContentType.objects.get_for_model(Event)
+                notif = 'העדכון'
+                the_object = Event.objects.get(pk=object_id)
+            content = comment_form.cleaned_data.get("content")
+            new_comment, created = Comment.objects.get_or_create(
+                user=the_user,
+                content_type=content_type,
+                object_id=object_id,
+                content=content,
             )
 
-        return redirect(reverse('panel:event', kwargs={'pupil_id': pupil_id, 'event_id': event_id}))
+            recipients = the_pupil.can_read.exclude(pk=the_user.pk)
+            if recipients:
+                user_name = "{} {} ".format(the_user.first_name, the_user.last_name)
+                message = '<strong>{}</strong> הגיב/ה על {} <strong>{}</strong> השייך ל<strong>{}</strong>'.format(user_name,
+                                                                                                                 notif,
+                                                                                                                 the_object.headline,
+                                                                                                                 the_pupil.name)
+                notify.send(
+                    sender=the_user,
+                    recipient=recipients,
+                    verb=message,
+                    action_object=new_comment,
+                    target=the_pupil,
+                    description='/panel/{}/events/{}'.format(pupil_id, event_id)
+                )
+
+            return redirect(reverse('panel:event', kwargs={'pupil_id': pupil_id, 'event_id': event_id}))
 
     context = {
         'pupil': the_pupil,
         'event': the_event,
         'nbar': 'panel',
         'all_cuts': the_pupil.cut_set.filter(event_id=event_id),
-        'comment_form': comment_form
+        'comment_form': CommentForm(),
+        'task_form': TaskForm(),
     }
+
+    t_obj = request.session.get('t_obj')
+    if t_obj:
+        context['t_obj'] = t_obj
+        request.session['t_obj'] = None
+
     return render(request, 'panel/event.html', context)
 
 

@@ -1,5 +1,6 @@
 {% extends 'panel/base.html' %}
 {% load widget_tweaks %}
+{% load staticfiles %}
 {% block title %} {{ event.headline }} {% endblock %}
 
 {% block content %}
@@ -16,9 +17,19 @@
     <div class="container">
         <div class="d-flex justify-content-between">
             <h5><strong>{{ event.headline }}</strong></h5>
-            <a class="btn btn-outline-secondary btn-sm mr-2" href="{% url 'panel:event-edit' pupil.pk event.pk %}">
-                <span class="oi oi-pencil"></span>
-            </a>
+            <div>
+
+                <button id="t_{{ event.pk }}" type="button" class="btn btn-outline-secondary btn-sm"  data-toggle="modal" data-target="#e_tasks_{{ event.pk }}">
+                    {% if event.tasks.all %}
+                    <small class="text-muted">{{ event.tasks.all.count }}</small>
+                    {% endif %}
+                    <span class="oi oi-task"></span>
+                </button>
+                <a class="btn btn-outline-secondary btn-sm mr-2" href="{% url 'panel:event-edit' pupil.pk event.pk %}">
+                    <span class="oi oi-pencil"></span>
+                </a>
+            </div>
+
         </div>
         <p class="text-muted">{{ event.date }}</p>
         <p style="white-space: pre-line">
@@ -54,7 +65,11 @@
                 </div>
                 <div class="col-auto p-0 d-flex align-items-end flex-column">
                     <div class="d-flex flex-row">
-                        <small class="text-primary">{% if cut.comments.all %}{{ cut.comments.all.count }}&nbsp{% endif %}</small>
+                        <small class="text-warning">{% if cut.tasks.all %}{{ cut.tasks.all.count }}&nbsp{% endif %}</small>
+                        <button type="button" id="t_{{ cut.pk }}" class="btn btn-outline-warning btn-circle" data-toggle="modal" data-target="#c_tasks_{{ cut.pk }}">
+                                <small><span class="oi oi-task"></span></small>
+                        </button>
+                        <small class="text-primary mr-1">{% if cut.comments.all %}{{ cut.comments.all.count }}&nbsp{% endif %}</small>
                         <button type="button" class="btn btn-outline-primary btn-circle" data-toggle="collapse" data-target="#add_comment_for_{{ cut.pk }}">
                                 <small><span class="oi oi-comment-square"></span></small>
                         </button>
@@ -86,6 +101,62 @@
                     </div>
                   </div>
                 </div>
+                <!--חלון משימות-->
+                <div class="modal fade" id="c_tasks_{{ cut.pk }}" tabindex="-1" role="dialog" aria-labelledby="c_tasks_{{ cut.pk }}_modal" aria-hidden="true">
+                  <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">משימות עבור {{ cut.headline }} | {% for param in cut.parameter.all %}{% if forloop.counter > 1 %}, {% endif %}{{ param }}{% endfor %}</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% if cut.tasks.all %}
+                        <div class="modal-body">
+                            <ul class="list-group pr-0">
+                              {% for task in cut.tasks.all %}
+                              <li class="list-group-item">
+                                <div class="row">
+                                    <div class="col col-auto">
+                                        <span class="badge badge-warning">{{ task.area }}</span>
+                                    </div>
+                                    <div class="col">
+                                        {{ task.content }}
+                                    </div>
+                                    {% if task.deadline %}
+                                    <div class="col-auto">
+                                        <small class="{% if task.is_past_due and not task.done %}text-danger{% else %}text-muted{% endif %}">{{ task.deadline }}</small>
+                                    </div>
+                                    {% endif %}
+                                    <div class="col-auto">
+                                        <a href="{% if not task.done %}{% url 'tasks:done' task.pk %}?ret={{ request.path|urlencode }}{% else %}{% url 'tasks:undone' task.pk %}?ret={{ request.path|urlencode }}{% endif %}" class="btn btn{% if not task.done %}-outline{% endif %}-success btn-sm-sm"></a>
+                                    </div>
+                                </div>
+                              </li>
+                              {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                        <div class="modal-footer justify-content-center">
+                            <form action="" method="post" class="form-inline">
+                              {% csrf_token %}
+                                <div class="col">
+                                    {{ task_form.content|add_class:"form-control"}}
+                                </div>
+                                <div class="col col-auto">
+                                    {{ task_form.deadline|add_class:"form-control datepicker"}}
+                                </div>
+                                <div class="col col-auto">
+                                    {{ task_form.area|add_class:"form-control"}}
+                                </div>
+                                <div class="col col-auto">
+                                    <button class="btn btn-outline-info" type="submit" name="obj_id" value="cut={{ cut.pk }}">סיום</button>
+                                </div>
+                          </form>
+                        </div>
+                    </div>
+                  </div>
+                </div>
             </div>
             <!--חלונית להוספת תגובה-->
             <div class="collapse" id="add_comment_for_{{ cut.pk }}">
@@ -96,7 +167,7 @@
                           {{ comment_form.content|add_class:"form-control"}}
                       </div>
                       <div class="col-auto p-0">
-                          <button class="btn btn-outline-info mr-2" type="submit" name="cut_id" value="{{ cut.pk }}">פרסום</button>
+                          <button class="btn btn-outline-info mr-2" type="submit" name="obj_id" value="cut={{ cut.pk }}">פרסום</button>
                       </div>
                   </form>
                 {% if cut.comments.all %}
@@ -126,7 +197,7 @@
               {{ comment_form.content|add_class:"form-control"}}
           </div>
           <div class="col-auto p-0">
-              <button class="btn btn-outline-info mr-2" type="submit" name="event_id" value="{{ event.pk }}">פרסום</button>
+              <button class="btn btn-outline-info mr-2" type="submit" name="obj_id" value="event={{ event.pk }}">פרסום</button>
           </div>
       </form>
       {% if event.comments.all %}
@@ -146,6 +217,91 @@
       </ul>
       {% endif %}
     </div>
+    <!--חלון משימות-->
+    <div class="modal fade" id="e_tasks_{{ event.pk }}" tabindex="-1" role="dialog" aria-labelledby="e_tasks_{{ event.pk }}_modal" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">משימות עבור {{ event.headline }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% if event.tasks.all %}
+            <div class="modal-body">
+                <ul class="list-group pr-0">
+                  {% for task in event.tasks.all %}
+                  <li class="list-group-item">
+                    <div class="row">
+                        <div class="col col-auto">
+                            <span class="badge badge-warning">{{ task.area }}</span>
+                        </div>
+                        <div class="col">
+                            {{ task.content }}
+                        </div>
+                        {% if task.deadline %}
+                        <div class="col-auto">
+                            <small class="{% if task.is_past_due and not task.done %}text-danger{% else %}text-muted{% endif %}">{{ task.deadline }}</small>
+                        </div>
+                        {% endif %}
+                        <div class="col-auto">
+                            <a href="{% if not task.done %}{% url 'tasks:done' task.pk %}?ret={{ request.path|urlencode }}{% else %}{% url 'tasks:undone' task.pk %}?ret={{ request.path|urlencode }}{% endif %}" class="btn btn{% if not task.done %}-outline{% endif %}-success btn-sm-sm"></a>
+                        </div>
+                    </div>
+                  </li>
+                  {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            <div class="modal-footer justify-content-center">
+                <form action="" method="post" class="form-inline">
+                  {% csrf_token %}
+                    <div class="col">
+                        {{ task_form.content|add_class:"form-control"}}
+                    </div>
+                    <div class="col col-auto">
+                        {{ task_form.deadline|add_class:"form-control datepicker"}}
+                    </div>
+                    <div class="col col-auto">
+                        {{ task_form.area|add_class:"form-control"}}
+                    </div>
+                    <div class="col col-auto">
+                        <button class="btn btn-outline-info" type="submit" name="obj_id" value="event={{ event.pk }}">סיום</button>
+                    </div>
+              </form>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript" src="{% static 'panel/jquery/jquery-3.2.1.min.js' %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        {% if t_obj %}
+        $("#{{ t_obj }}").removeClass('fade').modal('show').addClass('fade');
+        {% endif %}
+        $(".datepicker").daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            timePicker24Hour: true,
+            timePickerIncrement: 5,
+            opens: "center",
+            autoUpdateInput: false,
+            locale: {
+                format: 'דד-ליין: DD/MM/YY | HH:mm',
+                applyLabel: "החל",
+                cancelLabel: "נקה",
+            }
+        });
+        $(".datepicker").on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('דד-ליין: DD/MM/YY | HH:mm'));
+        });
+        $(".datepicker").on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    });
+    </script>
+
 {% endblock %}
 
 

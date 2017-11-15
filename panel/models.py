@@ -4,6 +4,7 @@ from taggit.managers import TaggableManager
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericRelation
 from comments.models import Comment
+from tasks.models import Task
 
 
 class Parameter(models.Model):
@@ -51,6 +52,7 @@ class Event(models.Model):
     date = models.DateField(verbose_name="תאריך")
     updated_by = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="עודכן על ידי", default=None)
     comments = GenericRelation(Comment)
+    tasks = GenericRelation(Task)
 
     def __str__(self):
         return self.headline
@@ -74,6 +76,7 @@ class Cut(models.Model):
     private = models.BooleanField(default=False, blank=True, verbose_name="עדכון פרטי")
     event = models.ForeignKey(Event, blank=True, null=True)
     comments = GenericRelation(Comment)
+    tasks = GenericRelation(Task)
 
     def __str__(self):
         return self.headline

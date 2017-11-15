@@ -11,6 +11,7 @@ urlpatterns = [
     url(r'^panel/', include('panel.urls')),
     url(r'^search/', include('search.urls')),
     url(r'^export/', include('export.urls')),
+    url(r'^tasks/', include('tasks.urls')),
     url(r'^login/', login_view, name="login"),
     url(r'^register/', register_view, name="register"),
     url(r'^logout/', logout_view, name="logout"),

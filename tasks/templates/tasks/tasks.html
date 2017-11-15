@@ -1,0 +1,128 @@
+{% extends 'panel/base.html' %}
+{% load widget_tweaks %}
+{% load staticfiles %}
+{% load taggit_templatetags2_tags %}
+{% block title %} משימות {% endblock %}
+
+{% block content %}
+
+    <h5><strong>משימות</strong></h5><br>
+
+    <!--משימה חדשה-->
+    <div class="list-group">
+        <div class="list-group-item">
+            <form action="" method="post" class="form-inline">
+              {% csrf_token %}
+                <div class="col pr-0">
+                    {{ task_form.content|add_class:"form-control"}}
+                </div>
+                <div class="col col-auto">
+                    {{ task_form.deadline|add_class:"form-control"}}
+                </div>
+                <div class="col col-auto">
+                    {{ task_form.area|add_class:"form-control"}}
+                </div>
+                <div class="col col-auto pl-0">
+                    <button class="btn btn-outline-info" type="submit">סיום</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+
+    {% if undone %}
+    <!-- משימות שלא בוצעו -->
+    <ul class="list-group pr-0">
+      {% for task in undone %}
+      <li class="list-group-item">
+        <div class="row">
+            {% if task.content_object.pupil %}
+            <div class="col col-auto">
+                <span class="badge badge-primary">{{ task.content_object.pupil }}</span>
+            </div>
+            <div class="col col-auto">
+                <span class="badge badge-danger">{{ task.content_object.headline }}</span>
+            </div>
+            {% endif %}
+            <div class="col col-auto">
+                <span class="badge badge-warning">{{ task.area }}</span>
+            </div>
+            <div class="col">
+                {{ task.content }}
+            </div>
+            {% if task.deadline %}
+            <div class="col-auto">
+                <small class="{% if task.is_past_due and not task.done %}text-danger{% else %}text-muted{% endif %}">{{ task.deadline }}</small>
+            </div>
+            {% endif %}
+            <div class="col-auto">
+                <a href="{% if not task.done %}{% url 'tasks:done' task.pk %}?ret={{ request.path|urlencode }}{% else %}{% url 'tasks:undone' task.pk %}?ret={{ request.path|urlencode }}{% endif %}" class="btn btn{% if not task.done %}-outline{% endif %}-success btn-sm-sm"></a>
+            </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if done %}
+    <!-- משימות שבוצעו -->
+    <br>
+    <ul class="list-group pr-0">
+      <strong class="text-success align-self-center">בוצעו</strong>
+      {% for task in done %}
+      <li class="list-group-item">
+        <div class="row">
+            {% if task.content_object.pupil %}
+            <div class="col col-auto">
+                <span class="badge badge-primary">{{ task.content_object.pupil }}</span>
+            </div>
+            <div class="col col-auto">
+                <span class="badge badge-danger">{{ task.content_object.headline }}</span>
+            </div>
+            {% endif %}
+            <div class="col col-auto">
+                <span class="badge badge-warning">{{ task.area }}</span>
+            </div>
+            <div class="col">
+                {{ task.content }}
+            </div>
+            {% if task.deadline %}
+            <div class="col-auto">
+                <small class="{% if task.is_past_due and not task.done %}text-danger{% else %}text-muted{% endif %}">{{ task.deadline }}</small>
+            </div>
+            {% endif %}
+            <div class="col-auto">
+                <a href="{% if not task.done %}{% url 'tasks:done' task.pk %}?ret={{ request.path|urlencode }}{% else %}{% url 'tasks:undone' task.pk %}?ret={{ request.path|urlencode }}{% endif %}" class="btn btn{% if not task.done %}-outline{% endif %}-success btn-sm-sm"></a>
+            </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    <script type="text/javascript" src="{% static 'panel/jquery/jquery-3.2.1.min.js' %}"></script>
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $("#id_deadline").daterangepicker({
+            singleDatePicker: true,
+            timePicker: true,
+            timePicker24Hour: true,
+            timePickerIncrement: 5,
+            opens: "center",
+            autoUpdateInput: false,
+            locale: {
+                format: 'דד-ליין: DD/MM/YY | HH:mm',
+                applyLabel: "החל",
+                cancelLabel: "נקה",
+            }
+        });
+        $("#id_deadline").on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('דד-ליין: DD/MM/YY | HH:mm'));
+        });
+        $("#id_deadline").on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
+    });
+    </script>
+
+{% endblock %}

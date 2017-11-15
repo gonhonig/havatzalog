@@ -11,17 +11,23 @@ var registered_functions = [];
 function fill_notification_badge(data) {
     var badge = document.getElementById(notify_badge_id);
     if (badge) {
-        badge.innerHTML =data.unread_count;
+        badge.innerHTML = data.unread_count;
     }
 }
 
 function fill_notification_list(data) {
     var menu = document.getElementById(notify_menu_id);
     if (menu) {
+        var count = data.unread_list.length;
+        if (count == 0){
+            document.getElementById('notif-icon').className = 'nav-link oi oi-globe pr-1';
+        } else {
+            document.getElementById('notif-icon').className = 'nav-link oi oi-globe pr-1 text-danger';
+        }
         var content = [];
         menu.innerHTML = data.unread_list.map(function (item) {
             var message = "";
-            var url = "#"
+            var url = "#";
             if(typeof item.verb !== 'undefined'){
                 message = item.verb;
             }
@@ -56,9 +62,7 @@ function fetch_api_data() {
         r.open("GET", notify_api_url+'?max='+notify_fetch_count+'&mark_as_read=true', true);
         r.send();
     }
-    if (consecutive_misfires < 10) {
-        setTimeout(fetch_api_data,notify_refresh_period);
-    } else {
+    if (consecutive_misfires >= 10) {
         var badge = document.getElementById(notify_badge_id);
         if (badge) {
             badge.innerHTML = "!";
@@ -67,4 +71,4 @@ function fetch_api_data() {
     }
 }
 
-setTimeout(fetch_api_data, 1000);
+setTimeout(fetch_api_data, 0)

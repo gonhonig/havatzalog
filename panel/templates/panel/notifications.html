@@ -1,9 +1,9 @@
 {% extends 'panel/base.html' %}
 {% load notifications_tags %}
-{% block title %} {{ pupil }} {% endblock %}
+{% block title %} התראות {% endblock %}
 
 {% block content %}
-    <h4>כל ההתראות</h4>
+    <h5><strong>כל ההתראות</strong></h5>
     {% if not notifications %}
         <h5 class="text-muted">אין התראות</h5>
     {% else %}

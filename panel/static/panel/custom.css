@@ -200,3 +200,14 @@ input:checked + .slider:before {
     color: darkgray;
     text-decoration: none;
 }
+
+.col{
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+.btn-sm-sm{
+    height: 18px !important;
+    width: 18px !important;
+    padding: 3px;
+}
